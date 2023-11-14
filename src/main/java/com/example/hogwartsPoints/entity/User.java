@@ -1,12 +1,18 @@
 package com.example.hogwartsPoints.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Data
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "user")
 public class User {
     @Id
@@ -21,8 +27,7 @@ public class User {
     @Column(name = "cpf")
     private String cpf;
 
-    @ManyToOne(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
-    @JoinColumn(name = "house_id", referencedColumnName = "id")
+    @ManyToOne
     private House house;
 
     @Column(name = "password")

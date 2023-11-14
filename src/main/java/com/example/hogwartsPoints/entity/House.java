@@ -1,12 +1,19 @@
 package com.example.hogwartsPoints.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "house")
 public class House {
 
@@ -16,7 +23,10 @@ public class House {
     @Column(name = "id", unique = true, nullable = false)
     private  long id;
 
-    @Column(name = "name")
+    @Column(name = "name", unique = true)
     private String name;
+
+    @OneToMany(mappedBy = "house", cascade = CascadeType.ALL)
+    private List<User> users;
 
 }
