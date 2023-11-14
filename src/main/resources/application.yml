@@ -1,0 +1,20 @@
+logging:
+  level:
+    com.example.demo: "INFO"
+    org.springframework: "INFO"
+    org.springframework.cache: "DEBUG"
+
+spring:
+  application:
+    name: "@project.HogwartsPoints@"
+  banner:
+    location: classpath:banner.txt
+  datasource:
+    url: jdbc:mysql://localhost:3306/hogwartsapp
+    username: root
+    password: pwd123
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  flyway:
+    locations: db.migration
+  jpa:
+    open-in-view: false
