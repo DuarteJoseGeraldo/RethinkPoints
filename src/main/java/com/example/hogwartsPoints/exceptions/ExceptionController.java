@@ -15,11 +15,11 @@ import java.util.NoSuchElementException;
 @RestControllerAdvice
 public class ExceptionController {
 
-//    @ExceptionHandler(Exception.class)
-//    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-//    public ErrorDTO handleGenericException(Exception ex) {
-//        return ErrorDTO.builder().errorMessage(ex.getMessage()).build();
-//    }
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorDTO handleGenericException(Exception ex) {
+        return ErrorDTO.builder().errorMessage(ex.getMessage()).build();
+    }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)

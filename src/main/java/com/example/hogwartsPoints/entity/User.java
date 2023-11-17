@@ -27,7 +27,8 @@ public class User {
     @Column(name = "cpf")
     private String cpf;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "house_id", referencedColumnName = "id")
     private House house;
 
     @Column(name = "password")
@@ -38,4 +39,7 @@ public class User {
 
     @Column(name = "last_login")
     private LocalDateTime lastLogin;
+
+    @Column(name = "last_valid_token")
+    private String lastValidToken;
 }

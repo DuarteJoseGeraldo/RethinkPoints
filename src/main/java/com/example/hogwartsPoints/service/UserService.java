@@ -36,7 +36,10 @@ public class UserService {
     public User registerUser(RegisterUserDTO userData) throws Exception {
         User newUser;
 
+        userData.setCpf(userData.getCpf().replaceAll("[.\\-]", ""));
+
         AppUtils.validateCpf(userData.getCpf());
+
         if (userRepo.findByCpf(userData.getCpf()).isPresent())
             throw new EntityExistsException("User Already registered");
 

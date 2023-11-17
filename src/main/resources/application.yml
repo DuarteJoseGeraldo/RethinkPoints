@@ -4,6 +4,10 @@ logging:
     org.springframework: "INFO"
     org.springframework.cache: "DEBUG"
 
+jwt:
+  secret: "MeiaNoiteEuTeConto"
+  expirationMs: 3600000
+
 spring:
   application:
     name: "@project.HogwartsPoints@"

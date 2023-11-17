@@ -26,7 +26,4 @@ public class House {
     @Column(name = "name", unique = true)
     private String name;
 
-    @OneToMany(mappedBy = "house", cascade = CascadeType.ALL)
-    private List<User> users;
-
 }
