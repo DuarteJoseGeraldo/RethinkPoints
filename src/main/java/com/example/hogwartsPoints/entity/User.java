@@ -21,15 +21,18 @@ public class User {
     @Column(name = "id", unique = true, nullable = false)
     private  long id;
 
-    @Column(name = "name")
-    private String name;
-
     @Column(name = "cpf")
     private String cpf;
+
+    @Column(name = "name")
+    private String name;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "house_id", referencedColumnName = "id")
     private House house;
+
+    @Column(name = "user_type")
+    private String userType;
 
     @Column(name = "password")
     private String password;
@@ -42,4 +45,7 @@ public class User {
 
     @Column(name = "last_valid_token")
     private String lastValidToken;
+
+
+
 }

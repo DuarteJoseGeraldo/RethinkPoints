@@ -2,6 +2,9 @@ package com.example.hogwartsPoints.exceptions;
 
 import com.example.hogwartsPoints.DTOs.ErrorDTO;
 import com.example.hogwartsPoints.utils.AppUtils;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -10,6 +13,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
+import java.security.SignatureException;
 import java.util.NoSuchElementException;
 
 @RestControllerAdvice
@@ -47,5 +51,28 @@ public class ExceptionController {
     @ExceptionHandler(InvalidCpfException.class)
     public ErrorDTO handleInvalidCpfException(Exception exception) {
         return ErrorDTO.builder().errorMessage(exception.getMessage()).build();
+    }
+    @ExceptionHandler(ExpiredJwtException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ErrorDTO handleExpiredJwtException(ExpiredJwtException ex) {
+        return ErrorDTO.builder().errorMessage(ex.getMessage()).build();
+    }
+
+    @ExceptionHandler(UnsupportedJwtException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ErrorDTO handleUnsupportedJwtException(UnsupportedJwtException ex) {
+        return ErrorDTO.builder().errorMessage(ex.getMessage()).build();
+    }
+
+    @ExceptionHandler(MalformedJwtException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ErrorDTO handleMalformedJwtException(MalformedJwtException ex) {
+        return ErrorDTO.builder().errorMessage(ex.getMessage()).build();
+    }
+
+    @ExceptionHandler(SignatureException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ErrorDTO handleSignatureException(SignatureException ex) {
+        return ErrorDTO.builder().errorMessage(ex.getMessage()).build();
     }
 }

@@ -10,13 +10,14 @@ import java.time.LocalDateTime;
 public class RegisterUserDTO {
     private long id;
     @NonNull
-    private String name;
-    @NonNull
     private String cpf;
+    @NonNull
+    private String name;
     @NonNull
     private String house;
     @NonNull
     private String password;
+    private String userType;
     private Float points = 0.0F;
     private LocalDateTime lastLogin;
 }

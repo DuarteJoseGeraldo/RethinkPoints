@@ -47,7 +47,7 @@ public class UserService {
 
         House userHouse = houseRepo.findByNameContainingIgnoreCase(userData.getHouse()).orElseThrow(() -> new EntityNotFoundException("House not found"));
 
-        newUser = userRepo.save(User.builder().name(userData.getName()).cpf(userData.getCpf()).password(password).house(userHouse).points(0.0F).lastLogin(LocalDateTime.now()).build());
+        newUser = userRepo.save(User.builder().name(userData.getName()).cpf(userData.getCpf()).password(password).house(userHouse).userType("standard").points(0.0F).build());
         return userRepo.findById(newUser.getId()).orElseThrow(() -> new Exception("Erro ao cadastrar"));
     }
 

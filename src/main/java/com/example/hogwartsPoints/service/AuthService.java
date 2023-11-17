@@ -20,7 +20,6 @@ public class AuthService {
     @Autowired
     JwtUtil jwtUtil;
 
-
     public String getUserToken(LoginDTO loginData) {
         User userData = userRepo.findByCpf(loginData.getCpf()).orElseThrow(() -> new EntityNotFoundException("User not Found"));
         if (!BCrypt.verifyer().verify(loginData.getPassword().toCharArray(), userData.getPassword()).verified)
@@ -29,11 +28,22 @@ public class AuthService {
         userData.setLastValidToken(jwtUtil.generateToken(TokenDataDTO.builder()
                 .id(userData.getId())
                 .name(userData.getName())
-                .house(userData.getHouse().getName())
+                .userType(userData.getUserType())
                 .build()));
 
         userRepo.save(userData);
 
         return userData.getLastValidToken();
     }
+
+
+//    FUNÇÕES SO PRA DEBUGAR
+    public boolean testUserToken (String token){
+        return jwtUtil.tokenValidator(token);
+    }
+
+    public boolean testAdminToken (String token){
+        return  jwtUtil.adminValidator(token);
+    }
+
 }

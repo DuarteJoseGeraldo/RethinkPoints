@@ -8,5 +8,5 @@ import lombok.Data;
 public class TokenDataDTO {
     private long id;
     private String name;
-    private String house;
+    private String userType;
 }

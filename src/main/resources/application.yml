@@ -5,8 +5,8 @@ logging:
     org.springframework.cache: "DEBUG"
 
 jwt:
-  secret: "MeiaNoiteEuTeConto"
-  expirationMs: 3600000
+  secret: "3a1f85c2bd78119aee875af6db72501c"
+  expirationMs: 604800000
 
 spring:
   application:

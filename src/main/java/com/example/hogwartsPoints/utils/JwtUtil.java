@@ -25,9 +25,9 @@ public class JwtUtil {
         return Jwts.builder()
                 .claim("id", tokenDataDTO.getId())
                 .claim("name", tokenDataDTO.getName())
-                .claim("house", tokenDataDTO.getHouse())
+                .claim("userType", tokenDataDTO.getUserType())
                 .setExpiration(expiration)
-                .signWith(Keys.secretKeyFor(SignatureAlgorithm.HS512))
+                .signWith(Keys.hmacShaKeyFor(secret.getBytes()))
                 .compact();
     }
 
@@ -37,13 +37,22 @@ public class JwtUtil {
         TokenDataDTO userData = TokenDataDTO.builder()
                 .id(claims.get("id", Long.class))
                 .name(claims.get("name", String.class))
-                .house(claims.get("house", String.class))
+                .userType(claims.get("userType", String.class))
                 .build();
 
         return userData;
     }
 
     private Claims extractClaims(String token) {
-        return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
+        return Jwts.parserBuilder().setSigningKey(Keys.hmacShaKeyFor(secret.getBytes())).build().parseClaimsJws(token).getBody();
+    }
+
+    public boolean tokenValidator (String token){
+        Jwts.parserBuilder().setSigningKey(Keys.hmacShaKeyFor(secret.getBytes())).build().parseClaimsJws(token).getBody();
+        return true;
+    }
+
+    public boolean adminValidator(String token){
+        return "admin".equalsIgnoreCase(Jwts.parserBuilder().setSigningKey(Keys.hmacShaKeyFor(secret.getBytes())).build().parseClaimsJws(token).getBody().get("userType", String.class));
     }
 }
