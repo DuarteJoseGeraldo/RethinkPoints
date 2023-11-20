@@ -4,13 +4,14 @@ package com.example.hogwartsPoints.service;
 import at.favre.lib.crypto.bcrypt.BCrypt;
 import com.example.hogwartsPoints.DTOs.LoginDTO;
 import com.example.hogwartsPoints.DTOs.TokenDataDTO;
-import com.example.hogwartsPoints.entity.User;
+import com.example.hogwartsPoints.entity.UserEntity;
 import com.example.hogwartsPoints.respository.UserRepository;
 import com.example.hogwartsPoints.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import java.time.LocalDateTime;
 
 @Service
 public class AuthService {
@@ -21,29 +22,32 @@ public class AuthService {
     JwtUtil jwtUtil;
 
     public String getUserToken(LoginDTO loginData) {
-        User userData = userRepo.findByCpf(loginData.getCpf()).orElseThrow(() -> new EntityNotFoundException("User not Found"));
-        if (!BCrypt.verifyer().verify(loginData.getPassword().toCharArray(), userData.getPassword()).verified)
+        UserEntity userEntityData = userRepo.findByCpf(loginData.getCpf()).orElseThrow(() -> new EntityNotFoundException("User not Found"));
+        if (!BCrypt.verifyer().verify(loginData.getPassword().toCharArray(), userEntityData.getPassword()).verified)
             throw new IllegalArgumentException("Wrong Password");
 
-        userData.setLastValidToken(jwtUtil.generateToken(TokenDataDTO.builder()
-                .id(userData.getId())
-                .name(userData.getName())
-                .userType(userData.getUserType())
+        userEntityData.setLastValidToken(jwtUtil.generateToken(TokenDataDTO.builder()
+                .id(userEntityData.getId())
+                .name(userEntityData.getName())
+                .userType(userEntityData.getUserType())
                 .build()));
 
-        userRepo.save(userData);
+        userEntityData.setLastLogin(LocalDateTime.now());
 
-        return userData.getLastValidToken();
+        userRepo.save(userEntityData);
+
+        return userEntityData.getLastValidToken();
     }
 
 
-//    FUNÇÕES SO PRA DEBUGAR
-    public boolean testUserToken (String token){
+    //    FUNÇÕES SO PRA TESTAR
+    public boolean testUserToken(String token) {
         return jwtUtil.tokenValidator(token);
     }
 
-    public boolean testAdminToken (String token){
-        return  jwtUtil.adminValidator(token);
+    public boolean testAdminToken(String token) {
+
+        return jwtUtil.adminValidator(token);
     }
 
 }

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 import java.security.SignatureException;
+import java.time.DateTimeException;
 import java.util.NoSuchElementException;
 
 @RestControllerAdvice
@@ -73,6 +74,12 @@ public class ExceptionController {
     @ExceptionHandler(SignatureException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ErrorDTO handleSignatureException(SignatureException ex) {
+        return ErrorDTO.builder().errorMessage(ex.getMessage()).build();
+    }
+
+    @ExceptionHandler(DateTimeException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorDTO handleDateTimeException(DateTimeException ex) {
         return ErrorDTO.builder().errorMessage(ex.getMessage()).build();
     }
 }
