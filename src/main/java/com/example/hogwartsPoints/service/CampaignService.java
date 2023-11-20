@@ -19,7 +19,7 @@ public class CampaignService {
 
 
     public CampaignEntity registerCampaign(RegisterCampaignDTO campaingData) {
-        if (campaignRepo.findByIdCampaingIgnoreCase(campaingData.getIdCampaign()).isPresent())
+        if (campaignRepo.findByIdCampaignIgnoreCase(campaingData.getIdCampaign()).isPresent())
             throw new EntityExistsException("Campaign already exists");
         if (campaingData.getStartAt().isBefore(LocalDateTime.now()))
             throw new DateTimeException("The start date of the campaign must be greater than the current date");
@@ -44,7 +44,7 @@ public class CampaignService {
                 .build());
     }
 
-    public CampaignEntity getCampaignDataByIdCampaign(String idCampaing){
-        return campaignRepo.findByIdCampaingIgnoreCase(idCampaing).orElseThrow(() -> new EntityNotFoundException("Campaign Not Found"));
+    public CampaignEntity getCampaignDataByIdCampaign(String idCampaign){
+        return campaignRepo.findByIdCampaignIgnoreCase(idCampaign).orElseThrow(() -> new EntityNotFoundException("Campaign Not Found"));
     }
 }
