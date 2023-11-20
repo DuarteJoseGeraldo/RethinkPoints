@@ -14,10 +14,10 @@ CREATE TABLE `user`
     last_login TIMESTAMP,
     FOREIGN KEY (house_id) REFERENCES house (id)
 );
-CREATE TABLE `campaing`
+CREATE TABLE `campaign`
 (
     id             BIGINT PRIMARY KEY AUTO_INCREMENT,
-    id_campaing    VARCHAR(255),
+    id_campaign    VARCHAR(255),
     description    VARCHAR(255),
     our_parity     FLOAT,
     partner_parity FLOAT,

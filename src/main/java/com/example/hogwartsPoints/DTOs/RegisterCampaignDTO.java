@@ -4,15 +4,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
 
-import javax.persistence.Column;
 import java.time.LocalDateTime;
 
 @Data
 @Builder
-public class RegisterCampaingDTO {
+public class RegisterCampaignDTO {
     private  long id;
     @NonNull
-    private String idCampaing;
+    private String idCampaign;
     @NonNull
     private String description;
     private Float ourParity;

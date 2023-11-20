@@ -14,15 +14,15 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "campaing")
-public class CampaingEntity {
+public class CampaignEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "id", unique = true, nullable = false)
     private  long id;
 
-    @Column(name = "id_campaing")
-    private String idCampaing;
+    @Column(name = "id_campaign")
+    private String idCampaign;
 
     @Column(name = "description")
     private String description;

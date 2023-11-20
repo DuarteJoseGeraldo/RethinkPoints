@@ -1,8 +1,8 @@
 package com.example.hogwartsPoints.service;
 
-import com.example.hogwartsPoints.DTOs.RegisterCampaingDTO;
-import com.example.hogwartsPoints.entity.CampaingEntity;
-import com.example.hogwartsPoints.respository.CampaingRepository;
+import com.example.hogwartsPoints.DTOs.RegisterCampaignDTO;
+import com.example.hogwartsPoints.entity.CampaignEntity;
+import com.example.hogwartsPoints.respository.CampaignRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,18 +10,17 @@ import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 import java.time.DateTimeException;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 @Service
-public class CampaingService {
+public class CampaignService {
     @Autowired
-    CampaingRepository campaingRepo;
+    CampaignRepository campaignRepo;
 
 
-    public CampaingEntity registerCampaing(RegisterCampaingDTO campaingData) {
-        if (campaingRepo.findByIdCampaingIgnoreCase(campaingData.getIdCampaing()).isPresent())
-            throw new EntityExistsException("Campaing already exists");
+    public CampaignEntity registerCampaign(RegisterCampaignDTO campaingData) {
+        if (campaignRepo.findByIdCampaingIgnoreCase(campaingData.getIdCampaign()).isPresent())
+            throw new EntityExistsException("Campaign already exists");
         if (campaingData.getStartAt().isBefore(LocalDateTime.now()))
             throw new DateTimeException("The start date of the campaign must be greater than the current date");
         if (campaingData.getStartAt().isAfter(campaingData.getEndAt()))
@@ -35,13 +34,17 @@ public class CampaingService {
                 || Objects.isNull(campaingData.getPartnerParity()) && Objects.nonNull(campaingData.getOurParity()))
             throw new IllegalArgumentException("You can't register only one score parity");
 
-        return campaingRepo.save(CampaingEntity.builder()
-                .idCampaing(campaingData.getIdCampaing())
+        return campaignRepo.save(CampaignEntity.builder()
+                .idCampaign(campaingData.getIdCampaign())
                 .description(campaingData.getDescription())
                 .ourParity(campaingData.getOurParity())
                 .partnerParity(campaingData.getPartnerParity())
                 .startAt(campaingData.getStartAt())
                 .endAt(campaingData.getEndAt())
                 .build());
+    }
+
+    public CampaignEntity getCampaignDataByIdCampaign(String idCampaing){
+        return campaignRepo.findByIdCampaingIgnoreCase(idCampaing).orElseThrow(() -> new EntityNotFoundException("Campaign Not Found"));
     }
 }
