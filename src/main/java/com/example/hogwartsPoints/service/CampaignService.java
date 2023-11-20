@@ -18,29 +18,29 @@ public class CampaignService {
     CampaignRepository campaignRepo;
 
 
-    public CampaignEntity registerCampaign(RegisterCampaignDTO campaingData) {
-        if (campaignRepo.findByIdCampaignIgnoreCase(campaingData.getIdCampaign()).isPresent())
+    public CampaignEntity registerCampaign(RegisterCampaignDTO campaignData) {
+        if (campaignRepo.findByIdCampaignIgnoreCase(campaignData.getIdCampaign()).isPresent())
             throw new EntityExistsException("Campaign already exists");
-        if (campaingData.getStartAt().isBefore(LocalDateTime.now()))
-            throw new DateTimeException("The start date of the campaign must be greater than the current date");
-        if (campaingData.getStartAt().isAfter(campaingData.getEndAt()))
+        if (campaignData.getStartAt().isBefore(LocalDateTime.now()))
+            throw new DateTimeException("The start date of the campaign must be greater than the current time");
+        if (campaignData.getStartAt().isAfter(campaignData.getEndAt()))
             throw new DateTimeException("The campaign start date must be less than the end date");
-        if (Objects.nonNull(campaingData.getOurParity()) && campaingData.getOurParity() < 0)
+        if (Objects.nonNull(campaignData.getOurParity()) && campaignData.getOurParity() < 0)
             throw new IllegalArgumentException("Our Parity needs to be greater than 0");
-        if (Objects.nonNull(campaingData.getPartnerParity()) && campaingData.getPartnerParity() < 0)
+        if (Objects.nonNull(campaignData.getPartnerParity()) && campaignData.getPartnerParity() < 0)
             throw new IllegalArgumentException("Partner Parity needs to be greater than 0");
 
-        if (Objects.isNull(campaingData.getOurParity()) && Objects.nonNull(campaingData.getPartnerParity())
-                || Objects.isNull(campaingData.getPartnerParity()) && Objects.nonNull(campaingData.getOurParity()))
+        if (Objects.isNull(campaignData.getOurParity()) && Objects.nonNull(campaignData.getPartnerParity())
+                || Objects.isNull(campaignData.getPartnerParity()) && Objects.nonNull(campaignData.getOurParity()))
             throw new IllegalArgumentException("You can't register only one score parity");
 
         return campaignRepo.save(CampaignEntity.builder()
-                .idCampaign(campaingData.getIdCampaign())
-                .description(campaingData.getDescription())
-                .ourParity(campaingData.getOurParity())
-                .partnerParity(campaingData.getPartnerParity())
-                .startAt(campaingData.getStartAt())
-                .endAt(campaingData.getEndAt())
+                .idCampaign(campaignData.getIdCampaign())
+                .description(campaignData.getDescription())
+                .ourParity(campaignData.getOurParity())
+                .partnerParity(campaignData.getPartnerParity())
+                .startAt(campaignData.getStartAt())
+                .endAt(campaignData.getEndAt())
                 .build());
     }
 

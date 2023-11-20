@@ -1,12 +1,12 @@
 package com.example.hogwartsPoints.DTOs;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NonNull;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class RegisterUserDTO {
     private long id;
     @NonNull

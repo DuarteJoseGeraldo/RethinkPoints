@@ -19,10 +19,23 @@ import java.util.NoSuchElementException;
 
 @RestControllerAdvice
 public class ExceptionController {
-
+    /*---------------------------------GENERIC---------------------------------*/
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorDTO handleGenericException(Exception ex) {
+        return ErrorDTO.builder().errorMessage(ex.getMessage()).build();
+    }
+
+    /*---------------------------------BAD REQUEST---------------------------------*/
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorDTO handleIllegalArgumentException(IllegalArgumentException ex) {
+        return ErrorDTO.builder().errorMessage(ex.getMessage()).build();
+    }
+
+    @ExceptionHandler(DateTimeException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorDTO handleDateTimeException(DateTimeException ex) {
         return ErrorDTO.builder().errorMessage(ex.getMessage()).build();
     }
 
@@ -31,6 +44,13 @@ public class ExceptionController {
     public ErrorDTO handleHttpMessageNotReadableException(Exception ex) {
         return ErrorDTO.builder().errorMessage(AppUtils.trySubstringProblem(ex.getMessage())).build();
     }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(InvalidCpfException.class)
+    public ErrorDTO handleInvalidCpfException(Exception exception) {
+        return ErrorDTO.builder().errorMessage(exception.getMessage()).build();
+    }
+    /*---------------------------------NOT FOUND---------------------------------*/
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(NoSuchElementException.class)
     public ErrorDTO handleNoSuchElementException(Exception exception) {
@@ -43,16 +63,16 @@ public class ExceptionController {
         return ErrorDTO.builder().errorMessage(exception.getMessage()).build();
     }
 
+    /*---------------------------------CONFLICT---------------------------------*/
+
     @ResponseStatus(HttpStatus.CONFLICT)
     @ExceptionHandler(EntityExistsException.class)
     public ErrorDTO handleEntityExistsException(Exception exception) {
         return ErrorDTO.builder().errorMessage(exception.getMessage()).build();
     }
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(InvalidCpfException.class)
-    public ErrorDTO handleInvalidCpfException(Exception exception) {
-        return ErrorDTO.builder().errorMessage(exception.getMessage()).build();
-    }
+
+    /*---------------------------------UNAUTHORIZED---------------------------------*/
+
     @ExceptionHandler(ExpiredJwtException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ErrorDTO handleExpiredJwtException(ExpiredJwtException ex) {
@@ -74,12 +94,6 @@ public class ExceptionController {
     @ExceptionHandler(SignatureException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ErrorDTO handleSignatureException(SignatureException ex) {
-        return ErrorDTO.builder().errorMessage(ex.getMessage()).build();
-    }
-
-    @ExceptionHandler(DateTimeException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorDTO handleDateTimeException(DateTimeException ex) {
         return ErrorDTO.builder().errorMessage(ex.getMessage()).build();
     }
 }
