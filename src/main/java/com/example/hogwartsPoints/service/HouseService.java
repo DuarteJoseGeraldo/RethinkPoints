@@ -1,6 +1,6 @@
 package com.example.hogwartsPoints.service;
 
-import com.example.hogwartsPoints.DTOs.RegisterHouseDTO;
+import com.example.hogwartsPoints.dto.RegisterHouseDTO;
 import com.example.hogwartsPoints.entity.HouseEntity;
 import com.example.hogwartsPoints.respository.HouseRepository;
 import org.springframework.beans.factory.annotation.Autowired;

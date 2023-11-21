@@ -1,4 +1,4 @@
-package com.example.hogwartsPoints.DTOs;
+package com.example.hogwartsPoints.dto;
 
 import lombok.Builder;
 import lombok.Data;

@@ -1,7 +1,8 @@
 package com.example.hogwartsPoints.controller;
 
-import com.example.hogwartsPoints.DTOs.LoginDTO;
+import com.example.hogwartsPoints.dto.LoginDTO;
 import com.example.hogwartsPoints.service.AuthService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,13 +13,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/auth")
+@RequiredArgsConstructor
 public class AuthController {
 
-    @Autowired
-    AuthService authService;
+    private final AuthService authService;
     @PostMapping("/login")
     public ResponseEntity<?> getUserToken(@RequestBody LoginDTO loginData){
-
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(authService.getUserToken(loginData));
     }
 

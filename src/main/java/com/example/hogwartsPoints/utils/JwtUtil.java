@@ -1,23 +1,24 @@
 package com.example.hogwartsPoints.utils;
 
-import com.example.hogwartsPoints.DTOs.TokenDataDTO;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import com.example.hogwartsPoints.dto.TokenDataDTO;
+import com.example.hogwartsPoints.service.UserService;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.nio.file.AccessDeniedException;
 import java.util.Date;
 
 @Component
 public class JwtUtil {
-
     @Value("${jwt.secret}")
     private String secret;
-
     @Value("${jwt.expirationMs}")
     private long expirationMs;
+    @Autowired
+    UserService userService;
 
     public String generateToken(TokenDataDTO tokenDataDTO) {
         Date expiration = new Date(System.currentTimeMillis() + expirationMs);
@@ -47,12 +48,21 @@ public class JwtUtil {
         return Jwts.parserBuilder().setSigningKey(Keys.hmacShaKeyFor(secret.getBytes())).build().parseClaimsJws(token).getBody();
     }
 
-    public boolean tokenValidator (String token){
-        Jwts.parserBuilder().setSigningKey(Keys.hmacShaKeyFor(secret.getBytes())).build().parseClaimsJws(token).getBody();
-        return true;
+    public TokenDataDTO tokenValidator (String token) throws Exception {
+        if (token.startsWith("HogwartsAppJWTToken ")) {
+
+            String rawToken = token.substring(20).trim();
+            Jwts.parserBuilder().setSigningKey(Keys.hmacShaKeyFor(secret.getBytes())).build().parseClaimsJws(rawToken).getBody();
+            TokenDataDTO tokenData = extractTokenData(rawToken);
+
+            if(!userService.getUserDataById(tokenData.getId()).getLastValidToken().equals(rawToken)) throw new UnsupportedJwtException("Expired Token");
+
+            return tokenData;
+        }
+        throw new UnsupportedJwtException("Invalid Token Prefix");
     }
 
-    public boolean adminValidator(String token){
-        return "admin".equalsIgnoreCase(Jwts.parserBuilder().setSigningKey(Keys.hmacShaKeyFor(secret.getBytes())).build().parseClaimsJws(token).getBody().get("userType", String.class));
+    public void adminValidator(String type) throws Exception {
+        if (!type.equals("admin")) throw new AccessDeniedException("user does not have authorization");
     }
 }

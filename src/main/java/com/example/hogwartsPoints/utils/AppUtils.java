@@ -1,6 +1,6 @@
 package com.example.hogwartsPoints.utils;
 
-import com.example.hogwartsPoints.exceptions.InvalidCpfException;
+import com.example.hogwartsPoints.exception.InvalidCpfException;
 
 public class AppUtils {
     public static boolean  validateCpf (String cpf){

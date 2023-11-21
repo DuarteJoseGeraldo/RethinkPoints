@@ -2,8 +2,8 @@ package com.example.hogwartsPoints.service;
 
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
-import com.example.hogwartsPoints.DTOs.LoginDTO;
-import com.example.hogwartsPoints.DTOs.TokenDataDTO;
+import com.example.hogwartsPoints.dto.LoginDTO;
+import com.example.hogwartsPoints.dto.TokenDataDTO;
 import com.example.hogwartsPoints.entity.UserEntity;
 import com.example.hogwartsPoints.respository.UserRepository;
 import com.example.hogwartsPoints.utils.JwtUtil;
@@ -37,17 +37,6 @@ public class AuthService {
         userRepo.save(userEntityData);
 
         return userEntityData.getLastValidToken();
-    }
-
-
-    //    FUNÇÕES SO PRA TESTAR
-    public boolean testUserToken(String token) {
-        return jwtUtil.tokenValidator(token);
-    }
-
-    public boolean testAdminToken(String token) {
-
-        return jwtUtil.adminValidator(token);
     }
 
 }

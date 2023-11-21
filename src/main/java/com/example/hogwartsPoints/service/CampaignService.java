@@ -1,6 +1,6 @@
 package com.example.hogwartsPoints.service;
 
-import com.example.hogwartsPoints.DTOs.RegisterCampaignDTO;
+import com.example.hogwartsPoints.dto.RegisterCampaignDTO;
 import com.example.hogwartsPoints.entity.CampaignEntity;
 import com.example.hogwartsPoints.respository.CampaignRepository;
 import org.springframework.beans.factory.annotation.Autowired;

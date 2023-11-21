@@ -1,4 +1,4 @@
-package com.example.hogwartsPoints.exceptions;
+package com.example.hogwartsPoints.exception;
 
 public class InvalidCpfException extends RuntimeException {
 

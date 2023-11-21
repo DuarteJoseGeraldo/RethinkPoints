@@ -1,23 +1,26 @@
-package com.example.hogwartsPoints.exceptions;
+package com.example.hogwartsPoints.exception;
 
-import com.example.hogwartsPoints.DTOs.ErrorDTO;
+import com.example.hogwartsPoints.dto.ErrorDTO;
 import com.example.hogwartsPoints.utils.AppUtils;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
+import java.nio.file.AccessDeniedException;
 import java.security.SignatureException;
 import java.time.DateTimeException;
 import java.util.NoSuchElementException;
 
 @RestControllerAdvice
+@Component
 public class ExceptionController {
     /*---------------------------------GENERIC---------------------------------*/
     @ExceptionHandler(Exception.class)
@@ -72,6 +75,17 @@ public class ExceptionController {
     }
 
     /*---------------------------------UNAUTHORIZED---------------------------------*/
+
+    @ExceptionHandler(AccessDeniedException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ErrorDTO handleAccessDeniedException(AccessDeniedException ex) {
+        return ErrorDTO.builder().errorMessage(ex.getMessage()).build();
+    }
+    @ExceptionHandler(JwtFilterExecption.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ErrorDTO handleJwtFilterException(JwtFilterExecption ex) {
+        return ErrorDTO.builder().errorMessage(ex.getMessage()).build();
+    }
 
     @ExceptionHandler(ExpiredJwtException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)

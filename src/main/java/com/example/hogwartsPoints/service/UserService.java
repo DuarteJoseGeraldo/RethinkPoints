@@ -1,7 +1,8 @@
 package com.example.hogwartsPoints.service;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
-import com.example.hogwartsPoints.DTOs.RegisterUserDTO;
+import com.example.hogwartsPoints.dto.MessagesDTO;
+import com.example.hogwartsPoints.dto.RegisterUserDTO;
 import com.example.hogwartsPoints.entity.HouseEntity;
 import com.example.hogwartsPoints.entity.UserEntity;
 import com.example.hogwartsPoints.respository.HouseRepository;
@@ -21,10 +22,8 @@ public class UserService {
     @Autowired
     HouseRepository houseRepo;
 
-    ;
-
-    public UserEntity getUserDataById(Long id) throws Exception {
-        Optional<UserEntity> userData = userRepo.findById(id);
+    public UserEntity getUserDataById(Long userId) throws Exception {
+        Optional<UserEntity> userData = userRepo.findById(userId);
         if (userData.isPresent()) return userData.get();
         throw new EntityNotFoundException("user not found");
     }
@@ -47,4 +46,7 @@ public class UserService {
         return userRepo.findById(newUserEntity.getId()).orElseThrow(() -> new Exception("Erro ao cadastrar"));
     }
 
+    public MessagesDTO changePassword(long userId, String currentPassword, String newPassword){
+        return MessagesDTO.builder().build();
+    }
 }
