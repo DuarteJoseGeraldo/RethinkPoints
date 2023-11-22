@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 @RequiredArgsConstructor
 public class HouseController {
     private final HouseService houseService;
-    JwtUtil jwtUtil;
+    private final JwtUtil jwtUtil;
 
     @PostMapping("/register")
     public ResponseEntity<?> registerHouse(@RequestBody RegisterHouseDTO houseData, HttpServletRequest request) throws Exception {

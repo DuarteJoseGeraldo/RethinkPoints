@@ -13,8 +13,4 @@ public class UpdateUserDTO {
     private String cpf;
     private String name;
     private String house;
-    private String password;
-    private String userType;
-    private Float points = 0.0F;
-    private LocalDateTime lastLogin;
 }

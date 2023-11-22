@@ -4,6 +4,7 @@ import com.example.hogwartsPoints.dto.TokenDataDTO;
 import com.example.hogwartsPoints.service.UserService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -12,13 +13,13 @@ import java.nio.file.AccessDeniedException;
 import java.util.Date;
 
 @Component
+@RequiredArgsConstructor
 public class JwtUtil {
     @Value("${jwt.secret}")
     private String secret;
     @Value("${jwt.expirationMs}")
     private long expirationMs;
-    @Autowired
-    UserService userService;
+    private final UserService userService;
 
     public String generateToken(TokenDataDTO tokenDataDTO) {
         Date expiration = new Date(System.currentTimeMillis() + expirationMs);
@@ -34,14 +35,11 @@ public class JwtUtil {
 
     public TokenDataDTO extractTokenData(String token) {
         Claims claims = extractClaims(token);
-
-        TokenDataDTO userData = TokenDataDTO.builder()
+        return TokenDataDTO.builder()
                 .id(claims.get("id", Long.class))
                 .name(claims.get("name", String.class))
                 .userType(claims.get("userType", String.class))
                 .build();
-
-        return userData;
     }
 
     private Claims extractClaims(String token) {
@@ -50,13 +48,10 @@ public class JwtUtil {
 
     public TokenDataDTO tokenValidator (String token) throws Exception {
         if (token.startsWith("HogwartsAppJWTToken ")) {
-
             String rawToken = token.substring(20).trim();
             Jwts.parserBuilder().setSigningKey(Keys.hmacShaKeyFor(secret.getBytes())).build().parseClaimsJws(rawToken).getBody();
             TokenDataDTO tokenData = extractTokenData(rawToken);
-
             if(!userService.getUserDataById(tokenData.getId()).getLastValidToken().equals(rawToken)) throw new UnsupportedJwtException("Expired Token");
-
             return tokenData;
         }
         throw new UnsupportedJwtException("Invalid Token Prefix");

@@ -20,24 +20,16 @@ public class CampaignEntity {
     @Basic(optional = false)
     @Column(name = "id", unique = true, nullable = false)
     private  long id;
-
-    @Column(name = "id_campaign")
+    @Column(name = "id_campaign", unique = true)
     private String idCampaign;
-
     @Column(name = "description")
     private String description;
-
     @Column(name = "our_parity")
     private Float ourParity;
-
     @Column(name = "partner_parity")
     private Float partnerParity;
-
     @Column(name = "start_at")
     private LocalDateTime startAt;
-
     @Column(name = "end_at")
     private LocalDateTime endAt;
-
-
 }
