@@ -40,11 +40,11 @@ public class UserService {
         return userRepo.save(UserEntity.builder().name(userData.getName()).cpf(userData.getCpf()).password(password).houseEntity(userHouseEntity).userType("standard").points(0.0F).isActive(true).build());
     }
 
-    public UserEntity updateData(UpdateUserDTO newUserData) {
-        if (Objects.nonNull(newUserData.getCpf())) newUserData.setCpf(validateCpf(newUserData.getCpf()));
+    public UserEntity updateData(UpdateUserDTO userNewData) {
+        if (Objects.nonNull(userNewData.getCpf())) userNewData.setCpf(validateCpf(userNewData.getCpf()));
 
-        UserEntity userData = userRepo.findById(newUserData.getId()).orElseThrow(() -> new EntityNotFoundException("User not Found"));
-        copyNonNullProperties(newUserData, userData);
+        UserEntity userData = userRepo.findById(userNewData.getId()).orElseThrow(() -> new EntityNotFoundException("User not Found"));
+        copyNonNullProperties(userNewData, userData);
         return userRepo.save(userData);
     }
 

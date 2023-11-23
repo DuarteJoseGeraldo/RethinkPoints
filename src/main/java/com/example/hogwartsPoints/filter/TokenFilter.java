@@ -25,7 +25,7 @@ public class TokenFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) {
         try {
             if (request.getServletPath().startsWith("/auth/login")
                     || request.getServletPath().startsWith("/users/register")) {
@@ -39,7 +39,7 @@ public class TokenFilter extends OncePerRequestFilter {
             }
         } catch (Exception e){
             log.error("doFilterInternal() - 'mensagem de erro': {}", e.getMessage());
-            response.sendError(401);
+            throw new JwtFilterExecption(e.getMessage());
         }
     }
 }

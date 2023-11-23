@@ -1,6 +1,7 @@
 package com.example.hogwartsPoints.controller;
 
 import com.example.hogwartsPoints.dto.RegisterCampaignDTO;
+import com.example.hogwartsPoints.dto.UpdateCampaignDTO;
 import com.example.hogwartsPoints.service.CampaignService;
 import com.example.hogwartsPoints.utils.JwtUtil;
 import lombok.RequiredArgsConstructor;
@@ -28,5 +29,18 @@ public class CampaignController {
     @GetMapping("/data")
     public ResponseEntity<?> getCampaignData(@RequestHeader String idCampaign) {
         return ResponseEntity.status(HttpStatus.OK).body(campaignService.getCampaignDataByIdCampaign(idCampaign));
+    }
+
+    @PatchMapping("/update")
+    public ResponseEntity<?> updateCampaignData(@RequestParam String idCampaign, @RequestBody UpdateCampaignDTO campaignNewData, HttpServletRequest request) throws Exception {
+        jwtUtil.adminValidator((String) request.getAttribute("userType"));
+        campaignNewData.setIdCampaign(idCampaign);
+        return ResponseEntity.status(HttpStatus.OK).body(campaignService.updateCampaignData(campaignNewData));
+    }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<?> deleteCampaign(@RequestParam Long id, HttpServletRequest request) throws Exception {
+        jwtUtil.adminValidator((String) request.getAttribute("userType"));
+        return ResponseEntity.status(HttpStatus.OK).body(campaignService.deleteCampaign(id));
     }
 }
