@@ -26,20 +26,20 @@ public class HouseController {
         return ResponseEntity.status(HttpStatus.CREATED).body(houseService.registerHouse(houseData));
     }
 
-    @GetMapping("/data")
-    public ResponseEntity<?> getHouseData(@RequestHeader String houseName) throws Exception {
+    @GetMapping("/info")
+    public ResponseEntity<?> getHouseData(@RequestParam String houseName) {
         return ResponseEntity.status(HttpStatus.OK).body(houseService.getHouseDataByName(houseName));
     }
 
     @PatchMapping("/update")
-    public ResponseEntity<?> updateHouseData(@RequestHeader long houseId, UpdateHouseDTO houseNewData, HttpServletRequest request) throws Exception {
+    public ResponseEntity<?> updateHouseData(@RequestParam Long houseId, @RequestBody UpdateHouseDTO houseNewData, HttpServletRequest request) throws Exception {
         jwtUtil.adminValidator((String) request.getAttribute("userType"));
         houseNewData.setId(houseId);
         return ResponseEntity.status(HttpStatus.OK).body(houseService.updateHouseData(houseNewData));
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<?> deleteHouse(@RequestParam Long houseId){
+    public ResponseEntity<?> deleteHouse(@RequestParam Long houseId) {
         return ResponseEntity.status(HttpStatus.OK).body(houseService.deleteHouse(houseId));
     }
 }

@@ -8,6 +8,6 @@ import java.util.Optional;
 
 @Repository
 public interface CampaignRepository extends JpaRepository<CampaignEntity, Long> {
-    Optional<CampaignEntity> findById(long id);
+    Optional<CampaignEntity> findById(Long id);
     Optional<CampaignEntity> findByIdCampaignIgnoreCase(String idCampaign);
 }

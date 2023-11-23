@@ -26,21 +26,20 @@ public class CampaignController {
         return ResponseEntity.status(HttpStatus.CREATED).body(campaignService.registerCampaign(campaignData));
     }
 
-    @GetMapping("/data")
+    @GetMapping("/info")
     public ResponseEntity<?> getCampaignData(@RequestHeader String idCampaign) {
         return ResponseEntity.status(HttpStatus.OK).body(campaignService.getCampaignDataByIdCampaign(idCampaign));
     }
 
     @PatchMapping("/update")
-    public ResponseEntity<?> updateCampaignData(@RequestParam String idCampaign, @RequestBody UpdateCampaignDTO campaignNewData, HttpServletRequest request) throws Exception {
+    public ResponseEntity<?> updateCampaignData(@RequestParam Long campaignId, @RequestBody UpdateCampaignDTO campaignNewData, HttpServletRequest request) throws Exception {
         jwtUtil.adminValidator((String) request.getAttribute("userType"));
-        campaignNewData.setIdCampaign(idCampaign);
-        return ResponseEntity.status(HttpStatus.OK).body(campaignService.updateCampaignData(campaignNewData));
+        return ResponseEntity.status(HttpStatus.OK).body(campaignService.updateCampaignData(campaignId, campaignNewData));
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<?> deleteCampaign(@RequestParam Long id, HttpServletRequest request) throws Exception {
+    public ResponseEntity<?> deleteCampaign(@RequestParam Long campaignId, HttpServletRequest request) throws Exception {
         jwtUtil.adminValidator((String) request.getAttribute("userType"));
-        return ResponseEntity.status(HttpStatus.OK).body(campaignService.deleteCampaign(id));
+        return ResponseEntity.status(HttpStatus.OK).body(campaignService.deleteCampaign(campaignId));
     }
 }

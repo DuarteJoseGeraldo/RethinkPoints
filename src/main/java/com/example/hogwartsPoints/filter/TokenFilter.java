@@ -17,6 +17,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Objects;
 
 @Component
 @Slf4j
@@ -31,6 +32,7 @@ public class TokenFilter extends OncePerRequestFilter {
                     || request.getServletPath().startsWith("/users/register")) {
                 filterChain.doFilter(request, response);
             } else {
+                if(Objects.isNull(request.getHeader("Authorization"))) throw new JwtFilterExecption ("Authorization Token Required");
                 TokenDataDTO validTokenData = jwtUtil.tokenValidator(request.getHeader("Authorization"));
                 request.setAttribute("userId", validTokenData.getId());
                 request.setAttribute("userName", validTokenData.getName());

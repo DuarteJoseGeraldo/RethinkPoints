@@ -5,15 +5,13 @@ import com.example.hogwartsPoints.dto.RegisterHouseDTO;
 import com.example.hogwartsPoints.dto.UpdateHouseDTO;
 import com.example.hogwartsPoints.entity.HouseEntity;
 import com.example.hogwartsPoints.respository.HouseRepository;
-
 import static com.example.hogwartsPoints.utils.AppUtils.copyNonNullProperties;
-
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class HouseService {
@@ -32,6 +30,7 @@ public class HouseService {
     public HouseEntity updateHouseData(UpdateHouseDTO houseNewData) {
         HouseEntity houseData = houseRepo.findById(houseNewData.getId()).orElseThrow(() -> new EntityNotFoundException("House not Found"));
         copyNonNullProperties(houseNewData, houseData);
+        log.info("updateHouseData() - 'House atualizada': {}", houseData);
         return houseRepo.save(houseData);
     }
 
