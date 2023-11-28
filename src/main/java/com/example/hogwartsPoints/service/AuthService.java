@@ -23,19 +23,19 @@ public class AuthService {
     private final UserRepository userRepo;
     private final JwtUtil jwtUtil;
 
-    public String getUserToken(LoginDTO loginData) throws Exception {
-        UserEntity userEntityData = validateUserData(loginData);
-
-        userEntityData.setLastValidToken(jwtUtil.generateToken(TokenDataDTO.builder()
-                .id(userEntityData.getId())
-                .name(userEntityData.getName())
-                .userType(userEntityData.getUserType())
-                .build()));
-        userEntityData.setLastLogin(LocalDateTime.now());
-        userRepo.save(userEntityData);
-
-        return userEntityData.getLastValidToken();
-    }
+//    public String getUserToken(LoginDTO loginData) throws Exception {
+//        UserEntity userEntityData = validateUserData(loginData);
+//
+//        userEntityData.setLastValidToken(jwtUtil.generateToken(TokenDataDTO.builder()
+//                .id(userEntityData.getId())
+//                .name(userEntityData.getName())
+//                .userType(userEntityData.getUserType())
+//                .build()));
+//        userEntityData.setLastLogin(LocalDateTime.now());
+//        userRepo.save(userEntityData);
+//
+//        return userEntityData.getLastValidToken();
+//    }
 
     private UserEntity validateUserData(LoginDTO loginData) throws Exception {
         UserEntity userEntityData = userRepo.findByCpf(loginData.getCpf()).orElseThrow(() -> new EntityNotFoundException("User not Found"));

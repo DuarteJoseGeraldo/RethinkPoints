@@ -63,7 +63,6 @@ public class UserService {
         UserEntity userData = userRepo.findById(userId).orElseThrow(() -> new EntityNotFoundException("user not found"));
         if (!BCrypt.verifyer().verify(password.toCharArray(), userData.getPassword()).verified)
             throw new IllegalArgumentException("Wrong Password");
-        userData.setLastValidToken(null);
         userData.setActive(false);
         userRepo.save(userData);
         return MessagesDTO.builder().message("user disabled successfully").build();

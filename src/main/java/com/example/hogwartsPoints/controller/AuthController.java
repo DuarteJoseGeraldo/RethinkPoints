@@ -22,6 +22,6 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> getUserToken(@RequestBody LoginDTO loginData) throws Exception {
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(authService.getUserToken(loginData));
+        return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 }

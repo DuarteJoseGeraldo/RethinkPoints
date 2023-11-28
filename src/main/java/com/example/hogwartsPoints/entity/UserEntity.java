@@ -35,8 +35,8 @@ public class UserEntity {
     private Float points;
     @Column(name = "last_login")
     private LocalDateTime lastLogin;
-    @Column(name = "last_valid_token")
-    private String lastValidToken;
+//    @Column(name = "last_valid_token")
+//    private String lastValidToken;
     @Column(name = "is_active")
     private boolean isActive;
 }

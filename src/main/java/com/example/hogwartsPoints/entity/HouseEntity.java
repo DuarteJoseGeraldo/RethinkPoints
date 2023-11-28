@@ -20,7 +20,6 @@ public class HouseEntity {
     @Basic(optional = false)
     @Column(name = "id", unique = true, nullable = false)
     private  long id;
-
     @Column(name = "name", unique = true)
     private String name;
 

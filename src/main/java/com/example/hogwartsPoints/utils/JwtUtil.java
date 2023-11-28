@@ -51,7 +51,7 @@ public class JwtUtil {
             String rawToken = token.substring(20).trim();
             Jwts.parserBuilder().setSigningKey(Keys.hmacShaKeyFor(secret.getBytes())).build().parseClaimsJws(rawToken).getBody();
             TokenDataDTO tokenData = extractTokenData(rawToken);
-            if(!userService.getUserDataById(tokenData.getId()).getLastValidToken().equals(rawToken)) throw new UnsupportedJwtException("Expired Token");
+//            if(!userService.getUserDataById(tokenData.getId()).getLastValidToken().equals(rawToken)) throw new UnsupportedJwtException("Expired Token");
             return tokenData;
         }
         throw new UnsupportedJwtException("Invalid Token Prefix");
