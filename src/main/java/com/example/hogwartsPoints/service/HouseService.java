@@ -30,7 +30,7 @@ public class HouseService {
     public HouseEntity updateHouseData(UpdateHouseDTO houseNewData) {
         HouseEntity houseData = houseRepo.findById(houseNewData.getId()).orElseThrow(() -> new EntityNotFoundException("House not Found"));
         copyNonNullProperties(houseNewData, houseData);
-        log.info("updateHouseData() - 'House atualizada': {}", houseData);
+        log.info("updateHouseData() - 'Updated updated': {}", houseData);
         return houseRepo.save(houseData);
     }
 

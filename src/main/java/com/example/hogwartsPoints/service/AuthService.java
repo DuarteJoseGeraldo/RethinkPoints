@@ -24,7 +24,7 @@ public class AuthService {
     private final JwtUtil jwtUtil;
 
     public String getUserToken(LoginDTO loginData) throws Exception {
-        UserEntity userEntityData = validadeUserData(loginData);
+        UserEntity userEntityData = validateUserData(loginData);
 
         userEntityData.setLastValidToken(jwtUtil.generateToken(TokenDataDTO.builder()
                 .id(userEntityData.getId())
@@ -37,7 +37,7 @@ public class AuthService {
         return userEntityData.getLastValidToken();
     }
 
-    private UserEntity validadeUserData(LoginDTO loginData) throws Exception {
+    private UserEntity validateUserData(LoginDTO loginData) throws Exception {
         UserEntity userEntityData = userRepo.findByCpf(loginData.getCpf()).orElseThrow(() -> new EntityNotFoundException("User not Found"));
         if (!userEntityData.isActive()) throw new AccessDeniedException("Disabled user");
         if (!BCrypt.verifyer().verify(loginData.getPassword().toCharArray(), userEntityData.getPassword()).verified)
