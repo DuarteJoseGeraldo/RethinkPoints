@@ -9,6 +9,7 @@ import java.beans.PropertyDescriptor;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.UUID;
 
 public class AppUtils {
     public static String validateCpf (String cpf){
@@ -59,5 +60,9 @@ public class AppUtils {
         }
         String[] result = new String[emptyNames.size()];
         return emptyNames.toArray(result);
+    }
+
+    private static String getRandomAlphanumeric(){
+        return UUID.randomUUID().toString().replace("-", "");
     }
 }

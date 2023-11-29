@@ -5,6 +5,7 @@ import com.example.hogwartsPoints.dto.ChangePasswordDTO;
 import com.example.hogwartsPoints.dto.MessagesDTO;
 import com.example.hogwartsPoints.dto.RegisterUserDTO;
 import com.example.hogwartsPoints.dto.UpdateUserDTO;
+import com.example.hogwartsPoints.dto.ourEnum.Status;
 import com.example.hogwartsPoints.entity.HouseEntity;
 import com.example.hogwartsPoints.entity.UserEntity;
 import com.example.hogwartsPoints.exception.ChangePasswordException;
@@ -37,7 +38,7 @@ public class UserService {
             throw new EntityExistsException("User Already registered");
         String password = BCrypt.withDefaults().hashToString(12, userData.getPassword().toCharArray());
         HouseEntity userHouseEntity = houseRepo.findByNameContainingIgnoreCase(userData.getHouse()).orElseThrow(() -> new EntityNotFoundException("House not found"));
-        return userRepo.save(UserEntity.builder().name(userData.getName()).cpf(userData.getCpf()).password(password).houseEntity(userHouseEntity).userType("standard").points(0.0F).isActive(true).build());
+        return userRepo.save(UserEntity.builder().name(userData.getName()).cpf(userData.getCpf()).password(password).houseEntity(userHouseEntity).userType("standard").points(0.0F).status(Status.ACTIVE).build());
     }
 
     public UserEntity updateData(UpdateUserDTO userNewData) {
@@ -63,7 +64,7 @@ public class UserService {
         UserEntity userData = userRepo.findById(userId).orElseThrow(() -> new EntityNotFoundException("user not found"));
         if (!BCrypt.verifyer().verify(password.toCharArray(), userData.getPassword()).verified)
             throw new IllegalArgumentException("Wrong Password");
-        userData.setActive(false);
+        userData.setStatus(Status.INACTIVE);
         userRepo.save(userData);
         return MessagesDTO.builder().message("user disabled successfully").build();
     }

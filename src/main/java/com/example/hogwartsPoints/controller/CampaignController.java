@@ -22,7 +22,6 @@ public class CampaignController {
 
     @PostMapping("/register")
     public ResponseEntity<?> registerCampaign(@RequestBody RegisterCampaignDTO campaignData,  HttpServletRequest request) throws Exception {
-        jwtUtil.adminValidator((String) request.getAttribute("userType"));
         return ResponseEntity.status(HttpStatus.CREATED).body(campaignService.registerCampaign(campaignData));
     }
 
@@ -33,13 +32,11 @@ public class CampaignController {
 
     @PatchMapping("/update")
     public ResponseEntity<?> updateCampaignData(@RequestParam Long campaignId, @RequestBody UpdateCampaignDTO campaignNewData, HttpServletRequest request) throws Exception {
-        jwtUtil.adminValidator((String) request.getAttribute("userType"));
         return ResponseEntity.status(HttpStatus.OK).body(campaignService.updateCampaignData(campaignId, campaignNewData));
     }
 
     @DeleteMapping("/delete")
     public ResponseEntity<?> deleteCampaign(@RequestParam Long campaignId, HttpServletRequest request) throws Exception {
-        jwtUtil.adminValidator((String) request.getAttribute("userType"));
         return ResponseEntity.status(HttpStatus.OK).body(campaignService.deleteCampaign(campaignId));
     }
 }

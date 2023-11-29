@@ -1,6 +1,9 @@
 package com.example.hogwartsPoints.utils;
 
 import com.example.hogwartsPoints.dto.TokenDataDTO;
+import com.example.hogwartsPoints.dto.ourEnum.LoginType;
+import com.example.hogwartsPoints.entity.AccessTokenEntity;
+import com.example.hogwartsPoints.respository.AccessTokenRepository;
 import com.example.hogwartsPoints.service.UserService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
@@ -10,54 +13,75 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.nio.file.AccessDeniedException;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Component
 @RequiredArgsConstructor
 public class JwtUtil {
-    @Value("${jwt.secret}")
-    private String secret;
-    @Value("${jwt.expirationMs}")
-    private long expirationMs;
-    private final UserService userService;
+    @Value("${jwt.userSecret}")
+    private String userSecret;
+    @Value("${jwt.userExpirationMs}")
+    private long userExpirationMs;
+    @Value("${jwt.partnerSecret}")
+    private String partnerSecret;
+    @Value("${jwt.partnerExpirationMs}")
+    private long partnerExpirationMs;
+    private final AccessTokenRepository accessTokenRepo;
 
-    public String generateToken(TokenDataDTO tokenDataDTO) {
-        Date expiration = new Date(System.currentTimeMillis() + expirationMs);
+    public String generateUserToken(TokenDataDTO tokenDataDTO) {
+        return tokenGenerator(tokenDataDTO, userExpirationMs, userSecret);
+    }
 
-        return Jwts.builder()
-                .claim("id", tokenDataDTO.getId())
-                .claim("name", tokenDataDTO.getName())
-                .claim("userType", tokenDataDTO.getUserType())
+    public String generatePartnerToken(TokenDataDTO tokenDataDTO) {
+        return tokenGenerator(tokenDataDTO, partnerExpirationMs, partnerSecret);
+    }
+
+    public TokenDataDTO userTokenValidator(String token) throws Exception {
+        return dataExtractor(tokenValidator(token, userSecret), userSecret);
+    }
+
+    public TokenDataDTO partnerTokenValidator(String token) throws Exception {
+        return dataExtractor(tokenValidator(token, partnerSecret), partnerSecret);
+    }
+
+    private String tokenGenerator(TokenDataDTO tokenDataDTO, long expirationTime, String secret) {
+        Date expiration = new Date(System.currentTimeMillis() + expirationTime);
+        String token = Jwts.builder()
+                .claim("userIdentifier", tokenDataDTO.getUserIdentifier())
+                .claim("loginType", tokenDataDTO.getLoginType())
                 .setExpiration(expiration)
                 .signWith(Keys.hmacShaKeyFor(secret.getBytes()))
                 .compact();
+        accessTokenRepo.save(AccessTokenEntity.builder()
+                .userIdentifier(tokenDataDTO.getUserIdentifier())
+                .token(token)
+                .loginType(tokenDataDTO.getLoginType())
+                .createdAt(LocalDateTime.now())
+                .build());
+        return token;
     }
 
-    public TokenDataDTO extractTokenData(String token) {
-        Claims claims = extractClaims(token);
-        return TokenDataDTO.builder()
-                .id(claims.get("id", Long.class))
-                .name(claims.get("name", String.class))
-                .userType(claims.get("userType", String.class))
-                .build();
-    }
-
-    private Claims extractClaims(String token) {
-        return Jwts.parserBuilder().setSigningKey(Keys.hmacShaKeyFor(secret.getBytes())).build().parseClaimsJws(token).getBody();
-    }
-
-    public TokenDataDTO tokenValidator (String token) throws Exception {
+    private String tokenValidator(String token, String secret) throws AccessDeniedException {
         if (token.startsWith("HogwartsAppJWTToken ")) {
             String rawToken = token.substring(20).trim();
             Jwts.parserBuilder().setSigningKey(Keys.hmacShaKeyFor(secret.getBytes())).build().parseClaimsJws(rawToken).getBody();
-            TokenDataDTO tokenData = extractTokenData(rawToken);
-//            if(!userService.getUserDataById(tokenData.getId()).getLastValidToken().equals(rawToken)) throw new UnsupportedJwtException("Expired Token");
-            return tokenData;
+            if (accessTokenRepo.findByUserIdentifier(dataExtractor(rawToken, secret).getUserIdentifier()).isEmpty())
+                throw new AccessDeniedException("Token not Registered");
+            return rawToken;
         }
         throw new UnsupportedJwtException("Invalid Token Prefix");
     }
 
-    public void adminValidator(String type) throws Exception {
-        if (!type.equals("admin")) throw new AccessDeniedException("user does not have authorization");
+    private TokenDataDTO dataExtractor(String token, String secret) {
+        Claims claims = extractClaims(token, secret);
+        return TokenDataDTO.builder()
+                .userIdentifier(claims.get("userIdentifier", String.class))
+                .loginType(claims.get("loginType", LoginType.class))
+                .build();
+    }
+
+    private Claims extractClaims(String token, String secret) {
+        return Jwts.parserBuilder().setSigningKey(Keys.hmacShaKeyFor(secret.getBytes())).build().parseClaimsJws(token).getBody();
     }
 }

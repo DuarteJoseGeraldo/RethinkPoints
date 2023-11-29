@@ -23,7 +23,6 @@ public class UserController {
 
     @GetMapping("/data") //acessar os dados de qualquer user
     public ResponseEntity<?> getUserDataById(@RequestHeader Long userId, HttpServletRequest request) throws Exception {
-        jwtUtil.adminValidator((String) request.getAttribute("userType"));
         return ResponseEntity.status(HttpStatus.OK).body(userService.getUserDataById(userId));
     }
 
@@ -53,7 +52,6 @@ public class UserController {
 
     @DeleteMapping("/delete")
     public ResponseEntity<?> deleteUser(@RequestParam Long userId, HttpServletRequest request) throws Exception {
-        jwtUtil.adminValidator((String)request.getAttribute("userType"));
         return ResponseEntity.status(HttpStatus.OK).body(userService.deleteUser(userId));
     }
 

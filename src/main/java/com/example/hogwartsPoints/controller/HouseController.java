@@ -22,7 +22,6 @@ public class HouseController {
 
     @PostMapping("/register")
     public ResponseEntity<?> registerHouse(@RequestBody RegisterHouseDTO houseData, HttpServletRequest request) throws Exception {
-        jwtUtil.adminValidator((String) request.getAttribute("userType"));
         return ResponseEntity.status(HttpStatus.CREATED).body(houseService.registerHouse(houseData));
     }
 
@@ -33,7 +32,6 @@ public class HouseController {
 
     @PatchMapping("/update")
     public ResponseEntity<?> updateHouseData(@RequestParam Long houseId, @RequestBody UpdateHouseDTO houseNewData, HttpServletRequest request) throws Exception {
-        jwtUtil.adminValidator((String) request.getAttribute("userType"));
         houseNewData.setId(houseId);
         return ResponseEntity.status(HttpStatus.OK).body(houseService.updateHouseData(houseNewData));
     }

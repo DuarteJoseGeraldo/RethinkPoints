@@ -17,11 +17,11 @@ ADD CONSTRAINT fk_campaign_partner
 
 CREATE TABLE access_token
 (
-    token           VARCHAR(255) NOT NULL,
     user_identifier VARCHAR(255),
+    token           VARCHAR(255) NOT NULL,
     login_type      ENUM('COMMON_AUTH', 'CLIENT_CREDENTIALS') DEFAULT 'COMMON_AUTH' NOT NULL,
     created_at      TIMESTAMP,
-    PRIMARY KEY (token)
+    PRIMARY KEY (user_identifier)
 );
 CREATE TABLE hotsite
 (

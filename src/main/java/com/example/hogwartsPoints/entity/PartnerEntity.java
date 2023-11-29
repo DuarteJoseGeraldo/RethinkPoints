@@ -20,7 +20,7 @@ public class PartnerEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "id", unique = true, nullable = false)
-    private  long id;
+    private  Long id;
     @Column(name = "name")
     private String name;
     @Column(name = "code", unique = true)

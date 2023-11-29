@@ -15,12 +15,12 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "access_token")
-public class AccessToken {
+public class AccessTokenEntity {
     @Id
-    @Column(name = "token", unique = true)
-    private String token;
     @Column(name = "user_identifier")
     private String userIdentifier;
+    @Column(name = "token", unique = true)
+    private String token;
     @Column(name = "login_type")
     @Enumerated(EnumType.STRING)
     private LoginType loginType;
