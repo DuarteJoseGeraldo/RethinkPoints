@@ -1,12 +1,11 @@
 package com.example.hogwartsPoints.controller;
 
-import com.example.hogwartsPoints.dto.ChangePasswordDTO;
-import com.example.hogwartsPoints.dto.RegisterUserDTO;
-import com.example.hogwartsPoints.dto.UpdateUserDTO;
+import com.example.hogwartsPoints.dto.update.ChangePasswordDTO;
+import com.example.hogwartsPoints.dto.register.RegisterUserDTO;
+import com.example.hogwartsPoints.dto.update.UpdateUserDTO;
 import com.example.hogwartsPoints.service.UserService;
 import com.example.hogwartsPoints.utils.JwtUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;

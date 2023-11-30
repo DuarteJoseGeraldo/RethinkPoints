@@ -1,4 +1,4 @@
-package com.example.hogwartsPoints.dto;
+package com.example.hogwartsPoints.dto.update;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

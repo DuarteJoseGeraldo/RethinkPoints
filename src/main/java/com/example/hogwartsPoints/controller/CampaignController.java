@@ -1,11 +1,10 @@
 package com.example.hogwartsPoints.controller;
 
-import com.example.hogwartsPoints.dto.RegisterCampaignDTO;
-import com.example.hogwartsPoints.dto.UpdateCampaignDTO;
+import com.example.hogwartsPoints.dto.register.RegisterCampaignDTO;
+import com.example.hogwartsPoints.dto.update.UpdateCampaignDTO;
 import com.example.hogwartsPoints.service.CampaignService;
 import com.example.hogwartsPoints.utils.JwtUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;

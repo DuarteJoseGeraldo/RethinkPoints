@@ -1,6 +1,6 @@
 package com.example.hogwartsPoints.entity;
 
-import com.example.hogwartsPoints.dto.ourEnum.Status;
+import com.example.hogwartsPoints.dto.enums.Status;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -30,8 +30,8 @@ public class PartnerEntity {
     private Status status;
     @Column(name = "client_id")
     private String clientId;
-    @Column(name = "client_key")
-    private String clientKey;
+    @Column(name = "client_secret")
+    private String clientSecret;
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 }

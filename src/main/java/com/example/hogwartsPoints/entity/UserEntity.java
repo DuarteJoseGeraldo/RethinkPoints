@@ -1,6 +1,7 @@
 package com.example.hogwartsPoints.entity;
 
-import com.example.hogwartsPoints.dto.ourEnum.Status;
+import com.example.hogwartsPoints.dto.enums.Status;
+import com.example.hogwartsPoints.dto.enums.UserType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,8 +29,9 @@ public class UserEntity {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "house_id", referencedColumnName = "id")
     private HouseEntity houseEntity;
+    @Enumerated(EnumType.STRING)
     @Column(name = "user_type")
-    private String userType;
+    private UserType userType;
     @Column(name = "password")
     private String password;
     @Column(name = "points")

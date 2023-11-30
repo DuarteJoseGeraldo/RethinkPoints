@@ -1,8 +1,8 @@
 package com.example.hogwartsPoints.service;
 
 import com.example.hogwartsPoints.dto.MessagesDTO;
-import com.example.hogwartsPoints.dto.RegisterHouseDTO;
-import com.example.hogwartsPoints.dto.UpdateHouseDTO;
+import com.example.hogwartsPoints.dto.register.RegisterHouseDTO;
+import com.example.hogwartsPoints.dto.update.UpdateHouseDTO;
 import com.example.hogwartsPoints.entity.HouseEntity;
 import com.example.hogwartsPoints.respository.HouseRepository;
 import static com.example.hogwartsPoints.utils.AppUtils.copyNonNullProperties;

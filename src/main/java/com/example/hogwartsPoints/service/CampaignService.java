@@ -1,10 +1,9 @@
 package com.example.hogwartsPoints.service;
 
 import com.example.hogwartsPoints.dto.MessagesDTO;
-import com.example.hogwartsPoints.dto.RegisterCampaignDTO;
-import com.example.hogwartsPoints.dto.UpdateCampaignDTO;
+import com.example.hogwartsPoints.dto.register.RegisterCampaignDTO;
+import com.example.hogwartsPoints.dto.update.UpdateCampaignDTO;
 import com.example.hogwartsPoints.entity.CampaignEntity;
-import com.example.hogwartsPoints.entity.HouseEntity;
 import com.example.hogwartsPoints.respository.CampaignRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

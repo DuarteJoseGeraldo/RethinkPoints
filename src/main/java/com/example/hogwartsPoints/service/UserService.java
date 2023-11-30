@@ -1,11 +1,12 @@
 package com.example.hogwartsPoints.service;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
-import com.example.hogwartsPoints.dto.ChangePasswordDTO;
+import com.example.hogwartsPoints.dto.update.ChangePasswordDTO;
 import com.example.hogwartsPoints.dto.MessagesDTO;
-import com.example.hogwartsPoints.dto.RegisterUserDTO;
-import com.example.hogwartsPoints.dto.UpdateUserDTO;
-import com.example.hogwartsPoints.dto.ourEnum.Status;
+import com.example.hogwartsPoints.dto.register.RegisterUserDTO;
+import com.example.hogwartsPoints.dto.update.UpdateUserDTO;
+import com.example.hogwartsPoints.dto.enums.Status;
+import com.example.hogwartsPoints.dto.enums.UserType;
 import com.example.hogwartsPoints.entity.HouseEntity;
 import com.example.hogwartsPoints.entity.UserEntity;
 import com.example.hogwartsPoints.exception.ChangePasswordException;
@@ -38,7 +39,7 @@ public class UserService {
             throw new EntityExistsException("User Already registered");
         String password = BCrypt.withDefaults().hashToString(12, userData.getPassword().toCharArray());
         HouseEntity userHouseEntity = houseRepo.findByNameContainingIgnoreCase(userData.getHouse()).orElseThrow(() -> new EntityNotFoundException("House not found"));
-        return userRepo.save(UserEntity.builder().name(userData.getName()).cpf(userData.getCpf()).password(password).houseEntity(userHouseEntity).userType("standard").points(0.0F).status(Status.ACTIVE).build());
+        return userRepo.save(UserEntity.builder().name(userData.getName()).cpf(userData.getCpf()).password(password).houseEntity(userHouseEntity).userType(UserType.STANDARD).points(0.0F).status(Status.ACTIVE).build());
     }
 
     public UserEntity updateData(UpdateUserDTO userNewData) {

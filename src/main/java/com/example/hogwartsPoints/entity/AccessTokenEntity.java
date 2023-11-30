@@ -1,6 +1,6 @@
 package com.example.hogwartsPoints.entity;
 
-import com.example.hogwartsPoints.dto.ourEnum.LoginType;
+import com.example.hogwartsPoints.dto.enums.LoginType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

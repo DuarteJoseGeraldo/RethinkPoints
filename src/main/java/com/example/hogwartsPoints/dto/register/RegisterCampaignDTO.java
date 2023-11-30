@@ -1,19 +1,23 @@
-package com.example.hogwartsPoints.dto;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+package com.example.hogwartsPoints.dto.register;
+
+import lombok.*;
 
 import java.time.LocalDateTime;
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UpdateCampaignDTO {
+public class RegisterCampaignDTO {
+    private  long id;
+    @NonNull
     private String idCampaign;
+    @NonNull
     private String description;
     private Float ourParity;
     private Float partnerParity;
+    @NonNull
     private LocalDateTime startAt;
+    @NonNull
     private LocalDateTime endAt;
 }

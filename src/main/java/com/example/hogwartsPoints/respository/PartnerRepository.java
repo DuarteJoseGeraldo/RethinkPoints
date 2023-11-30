@@ -9,4 +9,7 @@ import java.util.Optional;
 @Repository
 public interface PartnerRepository extends JpaRepository<PartnerEntity, Long> {
     Optional<PartnerEntity> findByClientId(String clientId);
+    Optional<PartnerEntity> findByCode(String partnerCode);
+    Optional<PartnerEntity> findById(Long id);
+    void deleteById(Long id);
 }

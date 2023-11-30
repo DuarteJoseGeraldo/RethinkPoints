@@ -1,17 +1,21 @@
 package com.example.hogwartsPoints.utils;
 
 import com.example.hogwartsPoints.dto.TokenDataDTO;
-import com.example.hogwartsPoints.dto.ourEnum.LoginType;
+import com.example.hogwartsPoints.dto.enums.LoginType;
+import com.example.hogwartsPoints.dto.enums.UserType;
 import com.example.hogwartsPoints.entity.AccessTokenEntity;
+import com.example.hogwartsPoints.entity.PartnerEntity;
+import com.example.hogwartsPoints.entity.UserEntity;
 import com.example.hogwartsPoints.respository.AccessTokenRepository;
-import com.example.hogwartsPoints.service.UserService;
+import com.example.hogwartsPoints.respository.PartnerRepository;
+import com.example.hogwartsPoints.respository.UserRepository;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.persistence.EntityNotFoundException;
 import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -28,6 +32,8 @@ public class JwtUtil {
     @Value("${jwt.partnerExpirationMs}")
     private long partnerExpirationMs;
     private final AccessTokenRepository accessTokenRepo;
+    private final UserRepository userRepo;
+    private final PartnerRepository partnerRepo;
 
     public String generateUserToken(TokenDataDTO tokenDataDTO) {
         return tokenGenerator(tokenDataDTO, userExpirationMs, userSecret);
@@ -37,19 +43,26 @@ public class JwtUtil {
         return tokenGenerator(tokenDataDTO, partnerExpirationMs, partnerSecret);
     }
 
-    public TokenDataDTO userTokenValidator(String token) throws Exception {
-        return dataExtractor(tokenValidator(token, userSecret), userSecret);
+    public UserEntity userTokenValidator(String token) throws Exception {
+        return userRepo.findByCpf(tokenValidator(token, userSecret).getUserIdentifier()).orElseThrow(() -> new EntityNotFoundException("Token Owner not Found"));
     }
 
-    public TokenDataDTO partnerTokenValidator(String token) throws Exception {
-        return dataExtractor(tokenValidator(token, partnerSecret), partnerSecret);
+    public PartnerEntity partnerTokenValidator(String token) throws Exception {
+        return partnerRepo.findByClientId(tokenValidator(token, partnerSecret).getUserIdentifier()).orElseThrow(() -> new EntityNotFoundException("Token Owner not Found"));
+    }
+
+    public UserEntity adminValidator(String token) throws Exception {
+        UserEntity userData = userTokenValidator(token);
+        if (!userData.getUserType().equals(UserType.ADMIN))
+            throw new AccessDeniedException("User type is not administrator");
+        return userData;
     }
 
     private String tokenGenerator(TokenDataDTO tokenDataDTO, long expirationTime, String secret) {
         Date expiration = new Date(System.currentTimeMillis() + expirationTime);
         String token = Jwts.builder()
                 .claim("userIdentifier", tokenDataDTO.getUserIdentifier())
-                .claim("loginType", tokenDataDTO.getLoginType())
+                .claim("loginType", tokenDataDTO.getLoginType().toString())
                 .setExpiration(expiration)
                 .signWith(Keys.hmacShaKeyFor(secret.getBytes()))
                 .compact();
@@ -62,22 +75,21 @@ public class JwtUtil {
         return token;
     }
 
-    private String tokenValidator(String token, String secret) throws AccessDeniedException {
+    private AccessTokenEntity tokenValidator(String token, String secret) throws AccessDeniedException {
         if (token.startsWith("HogwartsAppJWTToken ")) {
             String rawToken = token.substring(20).trim();
             Jwts.parserBuilder().setSigningKey(Keys.hmacShaKeyFor(secret.getBytes())).build().parseClaimsJws(rawToken).getBody();
-            if (accessTokenRepo.findByUserIdentifier(dataExtractor(rawToken, secret).getUserIdentifier()).isEmpty())
-                throw new AccessDeniedException("Token not Registered");
-            return rawToken;
+            return accessTokenRepo.findByUserIdentifier(dataExtractor(rawToken, secret).getUserIdentifier()).orElseThrow(() -> new AccessDeniedException("Token not Registered"));
         }
         throw new UnsupportedJwtException("Invalid Token Prefix");
     }
 
     private TokenDataDTO dataExtractor(String token, String secret) {
         Claims claims = extractClaims(token, secret);
+
         return TokenDataDTO.builder()
                 .userIdentifier(claims.get("userIdentifier", String.class))
-                .loginType(claims.get("loginType", LoginType.class))
+                .loginType(LoginType.fromValue(claims.get("loginType", String.class)))
                 .build();
     }
 

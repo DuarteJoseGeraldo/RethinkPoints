@@ -4,8 +4,8 @@ CREATE TABLE partner
     name       VARCHAR(255),
     code       VARCHAR(255) UNIQUE,
     status     ENUM('ACTIVE', 'INACTIVE'),
-    client_id  VARCHAR(255),
-    client_key VARCHAR(255),
+    client_id  VARCHAR(255) UNIQUE,
+    client_secret VARCHAR(255),
     created_at TIMESTAMP,
     PRIMARY KEY (id)
 );
