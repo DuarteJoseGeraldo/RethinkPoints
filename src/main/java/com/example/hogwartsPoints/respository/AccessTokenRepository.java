@@ -7,4 +7,6 @@ import java.util.Optional;
 @Repository
 public interface AccessTokenRepository extends JpaRepository<AccessTokenEntity, String> {
     Optional<AccessTokenEntity> findByUserIdentifier(String identifier);
+
+    void deleteByUserIdentifier(String identifier);
 }

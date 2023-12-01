@@ -5,6 +5,7 @@ import com.example.hogwartsPoints.dto.register.RegisterCampaignDTO;
 import com.example.hogwartsPoints.dto.update.UpdateCampaignDTO;
 import com.example.hogwartsPoints.entity.CampaignEntity;
 import com.example.hogwartsPoints.respository.CampaignRepository;
+import com.example.hogwartsPoints.utils.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -18,10 +19,11 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class CampaignService {
     private final CampaignRepository campaignRepo;
+    private final JwtUtil jwtUtil;
 
-    public CampaignEntity registerCampaign(RegisterCampaignDTO campaignData) {
+    public CampaignEntity registerCampaign(String accessToken, RegisterCampaignDTO campaignData) throws Exception {
+        jwtUtil.adminValidator(accessToken);
         validateCampaignData(campaignData);
-
         return campaignRepo.save(CampaignEntity.builder()
                 .idCampaign(campaignData.getIdCampaign())
                 .description(campaignData.getDescription())
@@ -32,11 +34,13 @@ public class CampaignService {
                 .build());
     }
 
-    public CampaignEntity getCampaignDataByIdCampaign(String idCampaign) {
+    public CampaignEntity getCampaignDataByIdCampaign(String accessToken,String idCampaign) throws Exception {
+        jwtUtil.userTokenValidator(accessToken);
         return campaignRepo.findByIdCampaignIgnoreCase(idCampaign).orElseThrow(() -> new EntityNotFoundException("Campaign Not Found"));
     }
 
-    public CampaignEntity updateCampaignData(Long campaignId , UpdateCampaignDTO campaignNewData) {
+    public CampaignEntity updateCampaignData(String accessToken,Long campaignId , UpdateCampaignDTO campaignNewData) throws Exception {
+        jwtUtil.adminValidator(accessToken);
         CampaignEntity campaignData = campaignRepo.findById(campaignId).orElseThrow(() -> new EntityNotFoundException("Campaign Not Found"));
         copyNonNullProperties(campaignNewData, campaignData);
         validateCampaignData(campaignData);
@@ -44,7 +48,8 @@ public class CampaignService {
         return campaignRepo.save(campaignData);
     }
 
-    public MessagesDTO deleteCampaign(Long id){
+    public MessagesDTO deleteCampaign(String accessToken,Long id) throws Exception {
+        jwtUtil.adminValidator(accessToken);
         campaignRepo.deleteById(id);
         return MessagesDTO.builder().message("Campaign deleted successfully").build();
     }

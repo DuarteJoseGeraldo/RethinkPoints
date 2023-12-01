@@ -5,6 +5,7 @@ import com.example.hogwartsPoints.dto.register.RegisterPartnerDTO;
 import com.example.hogwartsPoints.dto.enums.Status;
 import com.example.hogwartsPoints.dto.update.UpdatePartnerDTO;
 import com.example.hogwartsPoints.entity.PartnerEntity;
+import com.example.hogwartsPoints.respository.AccessTokenRepository;
 import com.example.hogwartsPoints.respository.PartnerRepository;
 import com.example.hogwartsPoints.utils.JwtUtil;
 import lombok.AllArgsConstructor;
@@ -23,6 +24,7 @@ import java.util.Objects;
 @AllArgsConstructor
 public class PartnerService {
     private final PartnerRepository partnerRepo;
+    private final AccessTokenRepository accessTokenRepo;
     private final JwtUtil jwtUtil;
 
     public PartnerEntity registerPartner (String accessToken, RegisterPartnerDTO partnerData) throws Exception {
@@ -50,11 +52,14 @@ public class PartnerService {
         PartnerEntity partner = partnerRepo.findByClientId(clientId).orElseThrow(() -> new EntityNotFoundException("Partner Not Found"));
         partner.setStatus(Status.INACTIVE);
         partnerRepo.save(partner);
+        jwtUtil.disableTokenByUserIdentifier(partner.getCode());
         return MessagesDTO.builder().message("Partner successfully disabled ").build();
     }
 
     public MessagesDTO deletePartner(String accessToken ,Long partnerId) throws Exception {
         jwtUtil.adminValidator(accessToken);
+        PartnerEntity partner = partnerRepo.findById(partnerId).orElseThrow(() -> new EntityNotFoundException("Partner Not Found"));
+        jwtUtil.disableTokenByUserIdentifier(partner.getCode());
         partnerRepo.deleteById(partnerId);
         return MessagesDTO.builder().message("Partner successfully deleted ").build();
     }

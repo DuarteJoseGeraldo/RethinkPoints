@@ -5,7 +5,9 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 
+import javax.servlet.http.HttpServletRequest;
 import java.beans.PropertyDescriptor;
+import java.nio.file.AccessDeniedException;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Objects;
@@ -54,6 +56,12 @@ public class AppUtils {
         String rawDate = LocalDate.now().toString().replace("-", "");
         return "partner_"+partnerCode+"_"+rawDate+"_"+getRandomAlphanumeric().substring(0,4);
     }
+
+    public static String getRequestToken(HttpServletRequest request) throws AccessDeniedException {
+        if (Objects.isNull(request.getAttribute("accessToken")))
+            throw new AccessDeniedException("Access Token required");
+        return request.getAttribute("accessToken").toString();
+    };
 
     private static String[] getNullPropertyNames(Object source) {
         final BeanWrapper src = new BeanWrapperImpl(source);

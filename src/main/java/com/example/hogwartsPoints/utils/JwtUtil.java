@@ -51,6 +51,12 @@ public class JwtUtil {
         return partnerRepo.findByClientId(tokenValidator(token, partnerSecret).getUserIdentifier()).orElseThrow(() -> new EntityNotFoundException("Token Owner not Found"));
     }
 
+    public void disableTokenByUserIdentifier(String identifier){
+        if(accessTokenRepo.findByUserIdentifier(identifier).isPresent()){
+            accessTokenRepo.deleteByUserIdentifier(identifier);
+        }
+    }
+
     public UserEntity adminValidator(String token) throws Exception {
         UserEntity userData = userTokenValidator(token);
         if (!userData.getUserType().equals(UserType.ADMIN))
