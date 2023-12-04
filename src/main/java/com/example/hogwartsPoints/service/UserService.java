@@ -17,6 +17,7 @@ import com.example.hogwartsPoints.respository.UserRepository;
 
 import com.example.hogwartsPoints.utils.JwtUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
 
@@ -29,6 +30,7 @@ import static com.example.hogwartsPoints.utils.AppUtils.*;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserService {
     private final UserRepository userRepo;
     private final HouseRepository houseRepo;
@@ -43,8 +45,7 @@ public class UserService {
         return jwtUtil.userTokenValidator(accessToken);
     }
 
-    public UserEntity registerUser(String accessToken, RegisterUserDTO userData) throws Exception {
-        jwtUtil.adminValidator(accessToken);
+    public UserEntity registerUser(RegisterUserDTO userData) throws Exception {
         userData.setCpf(validateCpf(userData.getCpf()));
         if (userRepo.findByCpf(userData.getCpf()).isPresent())
             throw new EntityExistsException("User Already registered");
@@ -55,8 +56,9 @@ public class UserService {
 
     public UserEntity updateData(String accessToken, UpdateUserDTO userNewData) throws Exception {
         UserEntity userData = jwtUtil.userTokenValidator(accessToken);
-        if (Objects.nonNull(userNewData.getCpf())) userNewData.setCpf(validateCpf(userNewData.getCpf()));
+        log.info("updateData() - 'User': {}", userData);
         copyNonNullProperties(userNewData, userData);
+        log.info("updateData() - 'User': {}", userData);
         return userRepo.save(userData);
     }
 
@@ -89,5 +91,6 @@ public class UserService {
         if (!Objects.equals(passwordData.getFirst("new_password"), passwordData.getFirst("password_confirmation")))
             throw new ChangePasswordException("new password and confirmation of new password do not match");
         userData.setPassword(BCrypt.withDefaults().hashToString(12, Objects.requireNonNull(passwordData.getFirst("new_password")).toCharArray()));
+        log.info("changePasswordValidator() - 'userData': {}", userData);
     }
 }

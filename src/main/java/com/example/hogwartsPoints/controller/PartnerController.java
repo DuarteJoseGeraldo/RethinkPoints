@@ -20,6 +20,10 @@ import javax.servlet.http.HttpServletRequest;
 public class PartnerController {
     private final PartnerService partnerService;
 
+    @GetMapping("/info")
+    public ResponseEntity<?> getPartnerInfo(@RequestParam String code, HttpServletRequest request) throws Exception{
+        return ResponseEntity.status(HttpStatus.OK).body(partnerService.getPartnerInfo(getRequestToken(request), code));
+    }
     @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> registerPartner(@RequestBody RegisterPartnerDTO partnerData, HttpServletRequest request) throws Exception {
         return ResponseEntity.status(HttpStatus.CREATED).body(partnerService.registerPartner(getRequestToken(request), partnerData));

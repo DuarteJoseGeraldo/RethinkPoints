@@ -9,8 +9,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UpdateUserDTO {
-    private long id;
-    private String cpf;
     private String name;
     private String house;
 }

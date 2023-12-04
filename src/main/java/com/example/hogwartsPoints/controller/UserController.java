@@ -4,6 +4,7 @@ import com.example.hogwartsPoints.dto.register.RegisterUserDTO;
 import com.example.hogwartsPoints.dto.update.UpdateUserDTO;
 import com.example.hogwartsPoints.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import java.util.Objects;
 @Controller
 @RequestMapping("/users")
 @RequiredArgsConstructor
+@Slf4j
 public class UserController {
     private final UserService userService;
 
@@ -33,19 +35,18 @@ public class UserController {
     }
 
     @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> registerUser(@RequestBody RegisterUserDTO userData, HttpServletRequest request) throws Exception {
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(userService.registerUser(getRequestToken(request), userData));
+    public ResponseEntity<?> registerUser(@RequestBody RegisterUserDTO userData) throws Exception {
+        return ResponseEntity.status(HttpStatus.CREATED).body(userService.registerUser( userData));
     }
 
     @PatchMapping(value = "/update/data", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updateUserData(@RequestBody UpdateUserDTO newUserData, HttpServletRequest request) throws Exception {
-
         return ResponseEntity.status(HttpStatus.OK).body(userService.updateData(getRequestToken(request), newUserData));
     }
 
-    @PatchMapping(value = "/update/password", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    @PostMapping(value = "/update/password", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public ResponseEntity<?> changePassword(@RequestBody MultiValueMap<String, String> body, HttpServletRequest request) throws Exception {
+        log.info("changePassword() - 'Body': {}", body);
         return ResponseEntity.status(HttpStatus.OK).body(userService.changePassword(getRequestToken(request), body));
     }
 

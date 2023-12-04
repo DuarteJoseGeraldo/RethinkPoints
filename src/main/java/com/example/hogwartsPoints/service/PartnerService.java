@@ -27,6 +27,10 @@ public class PartnerService {
     private final AccessTokenRepository accessTokenRepo;
     private final JwtUtil jwtUtil;
 
+    public PartnerEntity getPartnerInfo(String accessToken, String code) throws Exception {
+        jwtUtil.adminValidator(accessToken);
+        return partnerRepo.findByCode(code).orElseThrow(() -> new EntityNotFoundException("Partner not found"));
+    }
     public PartnerEntity registerPartner (String accessToken, RegisterPartnerDTO partnerData) throws Exception {
         jwtUtil.adminValidator(accessToken);
         partnerRegisterValidator(partnerData);
@@ -38,7 +42,6 @@ public class PartnerService {
                 .clientSecret(getRandomAlphanumeric())
                 .createdAt(LocalDateTime.now()).build());
     }
-
     public PartnerEntity updatePartner(String accessToken,String clientId, UpdatePartnerDTO partnerData) throws Exception {
         jwtUtil.adminValidator(accessToken);
         partnerUpdateValidator(partnerData);
@@ -55,7 +58,6 @@ public class PartnerService {
         jwtUtil.disableTokenByUserIdentifier(partner.getCode());
         return MessagesDTO.builder().message("Partner successfully disabled ").build();
     }
-
     public MessagesDTO deletePartner(String accessToken ,Long partnerId) throws Exception {
         jwtUtil.adminValidator(accessToken);
         PartnerEntity partner = partnerRepo.findById(partnerId).orElseThrow(() -> new EntityNotFoundException("Partner Not Found"));
@@ -63,8 +65,6 @@ public class PartnerService {
         partnerRepo.deleteById(partnerId);
         return MessagesDTO.builder().message("Partner successfully deleted ").build();
     }
-
-
     private void partnerRegisterValidator(RegisterPartnerDTO partnerData){
         partnerData.setCode(partnerData.getCode().toUpperCase());
         if(partnerRepo.findByCode(partnerData.getCode()).isPresent()) throw new EntityExistsException("Partner code already registered");
