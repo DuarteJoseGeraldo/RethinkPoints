@@ -1,2 +1,2 @@
 ALTER TABLE user
-    ADD COLUMN user_type ENUM('standard', 'admin') DEFAULT 'standard';
+    ADD COLUMN user_type ENUM('STANDARD', 'ADMIN') DEFAULT 'standard';

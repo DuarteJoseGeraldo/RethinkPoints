@@ -22,6 +22,9 @@ public class CampaignEntity {
     private  long id;
     @Column(name = "id_campaign", unique = true)
     private String idCampaign;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "partner_id", referencedColumnName = "id")
+    private PartnerEntity partner;
     @Column(name = "description")
     private String description;
     @Column(name = "our_parity")

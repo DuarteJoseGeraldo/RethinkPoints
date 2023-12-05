@@ -1,60 +1,63 @@
 package com.example.hogwartsPoints.controller;
 
-import com.example.hogwartsPoints.dto.ChangePasswordDTO;
-import com.example.hogwartsPoints.dto.RegisterUserDTO;
-import com.example.hogwartsPoints.dto.UpdateUserDTO;
+import com.example.hogwartsPoints.dto.register.RegisterUserDTO;
+import com.example.hogwartsPoints.dto.update.UpdateUserDTO;
 import com.example.hogwartsPoints.service.UserService;
-import com.example.hogwartsPoints.utils.JwtUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
+import static com.example.hogwartsPoints.utils.AppUtils.getRequestToken;
+
 import javax.servlet.http.HttpServletRequest;
+import java.util.Objects;
 
 @Controller
 @RequestMapping("/users")
 @RequiredArgsConstructor
+@Slf4j
 public class UserController {
     private final UserService userService;
-    private final JwtUtil jwtUtil;
 
-    @GetMapping("/data") //acessar os dados de qualquer user
+    @GetMapping(value = "/data") //acessar os dados de qualquer user
     public ResponseEntity<?> getUserDataById(@RequestHeader Long userId, HttpServletRequest request) throws Exception {
-        jwtUtil.adminValidator((String) request.getAttribute("userType"));
-        return ResponseEntity.status(HttpStatus.OK).body(userService.getUserDataById(userId));
+        return ResponseEntity.status(HttpStatus.OK).body(userService.getUserDataById(getRequestToken(request), userId));
     }
 
-    @GetMapping("/info") // dados do user logado
-    public ResponseEntity<?> getUserDataById(HttpServletRequest request) {
-        return ResponseEntity.status(HttpStatus.OK).body(userService.getUserDataById((Long) request.getAttribute("userId")));
+    @GetMapping(value = "/info") // dados do user logado
+    public ResponseEntity<?> getUserDataById(HttpServletRequest request) throws Exception {
+        return ResponseEntity.status(HttpStatus.OK).body(userService.getUserInfo(getRequestToken(request)));
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody RegisterUserDTO userData) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(userService.registerUser(userData));
+    @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> registerUser(@RequestBody RegisterUserDTO userData) throws Exception {
+        return ResponseEntity.status(HttpStatus.CREATED).body(userService.registerUser( userData));
     }
 
-    @PatchMapping("/update/data")
-    public ResponseEntity<?> updateUserData(@RequestBody UpdateUserDTO newUserData, HttpServletRequest request){
-        newUserData.setId((Long)request.getAttribute("userId"));
-        return ResponseEntity.status(HttpStatus.OK).body(userService.updateData(newUserData));
-    }
-    @PatchMapping("/update/password")
-    public ResponseEntity<?> changePassword(@RequestBody ChangePasswordDTO changePasswordData, HttpServletRequest request) {
-        return ResponseEntity.status(HttpStatus.OK).body(userService.changePassword((Long) request.getAttribute("userId"), changePasswordData));
-    }
-    @DeleteMapping("/disable")
-    public ResponseEntity<?> disableUser(@RequestHeader String password, HttpServletRequest request){
-        return ResponseEntity.status(HttpStatus.OK).body(userService.disableUser((Long) request.getAttribute("userId"), password));
+    @PatchMapping(value = "/update/data", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> updateUserData(@RequestBody UpdateUserDTO newUserData, HttpServletRequest request) throws Exception {
+        return ResponseEntity.status(HttpStatus.OK).body(userService.updateData(getRequestToken(request), newUserData));
     }
 
-    @DeleteMapping("/delete")
+    @PostMapping(value = "/update/password", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    public ResponseEntity<?> changePassword(@RequestBody MultiValueMap<String, String> body, HttpServletRequest request) throws Exception {
+        log.info("changePassword() - 'Body': {}", body);
+        return ResponseEntity.status(HttpStatus.OK).body(userService.changePassword(getRequestToken(request), body));
+    }
+
+    @DeleteMapping(value = "/disable", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    public ResponseEntity<?> disableUser(@RequestBody MultiValueMap<String, String> body, HttpServletRequest request) throws Exception {
+        return ResponseEntity.status(HttpStatus.OK).body(userService.disableUser(getRequestToken(request), Objects.requireNonNull(body.getFirst("password"))));
+    }
+
+    @DeleteMapping(value = "/delete")
     public ResponseEntity<?> deleteUser(@RequestParam Long userId, HttpServletRequest request) throws Exception {
-        jwtUtil.adminValidator((String)request.getAttribute("userType"));
-        return ResponseEntity.status(HttpStatus.OK).body(userService.deleteUser(userId));
+        return ResponseEntity.status(HttpStatus.OK).body(userService.deleteUser(getRequestToken(request), userId));
     }
 
 }

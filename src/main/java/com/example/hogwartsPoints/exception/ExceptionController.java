@@ -28,7 +28,7 @@ public class ExceptionController {
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorDTO handleGenericException(Exception ex) {
-        log.error("ExceptionHandler() - 'Erro Captado': {}", ex.getMessage());
+        log.error("ExceptionHandler() - 'Erro Captado': {}", (Object) ex.getStackTrace());
         return ErrorDTO.builder().errorMessage(ex.getMessage()).build();
     }
 
@@ -36,28 +36,28 @@ public class ExceptionController {
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorDTO handleIllegalArgumentException(IllegalArgumentException ex) {
-        log.error("ExceptionHandler() - 'Erro Captado': {}", ex.getMessage());
+        log.error("ExceptionHandler() - 'Erro Captado': {}", (Object) ex.getStackTrace());
         return ErrorDTO.builder().errorMessage(ex.getMessage()).build();
     }
 
     @ExceptionHandler(DateTimeException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorDTO handleDateTimeException(DateTimeException ex) {
-        log.error("ExceptionHandler() - 'Erro Captado': {}", ex.getMessage());
+        log.error("ExceptionHandler() - 'Erro Captado': {}", (Object) ex.getStackTrace());
         return ErrorDTO.builder().errorMessage(ex.getMessage()).build();
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorDTO handleHttpMessageNotReadableException(Exception ex) {
-        log.error("ExceptionHandler() - 'Erro Captado': {}", ex.getMessage());
+        log.error("ExceptionHandler() - 'Erro Captado': {}", (Object) ex.getStackTrace());
         return ErrorDTO.builder().errorMessage(AppUtils.trySubstringProblem(ex.getMessage())).build();
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(InvalidCpfException.class)
     public ErrorDTO handleInvalidCpfException(Exception ex) {
-        log.error("ExceptionHandler() - 'Erro Captado': {}", ex.getMessage());
+        log.error("ExceptionHandler() - 'Erro Captado': {}", (Object) ex.getStackTrace());
         return ErrorDTO.builder().errorMessage(ex.getMessage()).build();
     }
 
@@ -65,14 +65,14 @@ public class ExceptionController {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(NoSuchElementException.class)
     public ErrorDTO handleNoSuchElementException(Exception ex) {
-        log.error("ExceptionHandler() - 'Erro Captado': {}", ex.getMessage());
+        log.error("ExceptionHandler() - 'Erro Captado': {}", (Object) ex.getStackTrace());
         return ErrorDTO.builder().errorMessage(ex.getMessage()).build();
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(EntityNotFoundException.class)
     public ErrorDTO handleEntityNotFoundException(Exception ex) {
-        log.error("ExceptionHandler() - 'Erro Captado': {}", ex.getMessage());
+        log.error("ExceptionHandler() - 'Erro Captado': {}", (Object) ex.getStackTrace());
         return ErrorDTO.builder().errorMessage(ex.getMessage()).build();
     }
 
@@ -81,7 +81,7 @@ public class ExceptionController {
     @ResponseStatus(HttpStatus.CONFLICT)
     @ExceptionHandler(EntityExistsException.class)
     public ErrorDTO handleEntityExistsException(Exception ex) {
-        log.error("ExceptionHandler() - 'Erro Captado': {}", ex.getMessage());
+        log.error("ExceptionHandler() - 'Erro Captado': {}", (Object) ex.getStackTrace());
         return ErrorDTO.builder().errorMessage(ex.getMessage()).build();
     }
 
@@ -90,42 +90,42 @@ public class ExceptionController {
     @ExceptionHandler(AccessDeniedException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ErrorDTO handleAccessDeniedException(AccessDeniedException ex) {
-        log.error("ExceptionHandler() - 'Erro Captado': {}", ex.getMessage());
+        log.error("ExceptionHandler() - 'Erro Captado': {}", (Object) ex.getStackTrace());
         return ErrorDTO.builder().errorMessage(ex.getMessage()).build();
     }
 
     @ExceptionHandler(JwtFilterExecption.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ErrorDTO handleJwtFilterException(JwtFilterExecption ex) {
-        log.error("ExceptionHandler() - 'Erro Captado': {}", ex.getMessage());
+        log.error("ExceptionHandler() - 'Erro Captado': {}", (Object) ex.getStackTrace());
         return ErrorDTO.builder().errorMessage(ex.getMessage()).build();
     }
 
     @ExceptionHandler(ExpiredJwtException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ErrorDTO handleExpiredJwtException(ExpiredJwtException ex) {
-        log.error("ExceptionHandler() - 'Erro Captado': {}", ex.getMessage());
+        log.error("ExceptionHandler() - 'Erro Captado': {}", (Object) ex.getStackTrace());
         return ErrorDTO.builder().errorMessage(ex.getMessage()).build();
     }
 
     @ExceptionHandler(UnsupportedJwtException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ErrorDTO handleUnsupportedJwtException(UnsupportedJwtException ex) {
-        log.error("ExceptionHandler() - 'Erro Captado': {}", ex.getMessage());
+        log.error("ExceptionHandler() - 'Erro Captado': {}", (Object) ex.getStackTrace());
         return ErrorDTO.builder().errorMessage(ex.getMessage()).build();
     }
 
     @ExceptionHandler(MalformedJwtException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ErrorDTO handleMalformedJwtException(MalformedJwtException ex) {
-        log.error("ExceptionHandler() - 'Erro Captado': {}", ex.getMessage());
+        log.error("ExceptionHandler() - 'Erro Captado': {}", (Object) ex.getStackTrace());
         return ErrorDTO.builder().errorMessage(ex.getMessage()).build();
     }
 
     @ExceptionHandler(SignatureException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ErrorDTO handleSignatureException(SignatureException ex) {
-        log.error("ExceptionHandler() - 'Erro Captado': {}", ex.getMessage());
+        log.error("ExceptionHandler() - 'Erro Captado': {}", (Object) ex.getStackTrace());
         return ErrorDTO.builder().errorMessage(ex.getMessage()).build();
     }
 }

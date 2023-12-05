@@ -5,27 +5,31 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 
+import javax.servlet.http.HttpServletRequest;
 import java.beans.PropertyDescriptor;
+import java.nio.file.AccessDeniedException;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.UUID;
 
 public class AppUtils {
-    public static String validateCpf (String cpf){
+    public static String validateCpf(String cpf) {
         String rawCpf = cpf.replaceAll("[.\\-]", "");
 
-        String verifierResult = "" + checkVerifier(rawCpf.substring(0,9), 0) + checkVerifier(rawCpf.substring(0,10), 0) ;
+        String verifierResult = "" + checkVerifier(rawCpf.substring(0, 9), 0) + checkVerifier(rawCpf.substring(0, 10), 0);
 
         if (!rawCpf.substring(9).equals(verifierResult)) throw new InvalidCpfException();
         return rawCpf;
     }
 
-    private static int checkVerifier (String cpf, int result){
-        if(cpf.isEmpty()){
+    private static int checkVerifier(String cpf, int result) {
+        if (cpf.isEmpty()) {
             return (result * 10) % 11;
-        }else{
-            int newResult = (Integer.parseInt(cpf.charAt(0) + "") * (cpf.length()+1)) + result;
-            return checkVerifier(cpf.substring(1), newResult );
+        } else {
+            int newResult = (Integer.parseInt(cpf.charAt(0) + "") * (cpf.length() + 1)) + result;
+            return checkVerifier(cpf.substring(1), newResult);
         }
     }
 
@@ -40,9 +44,24 @@ public class AppUtils {
         }
     }
 
-    public static void copyNonNullProperties (Object source, Object target){
+    public static void copyNonNullProperties(Object source, Object target) {
         BeanUtils.copyProperties(source, target, getNullPropertyNames(source));
     }
+
+    public static String getRandomAlphanumeric() {
+        return UUID.randomUUID().toString().replace("-", "");
+    }
+
+    public static String generatePartnerId( String partnerCode) {
+        String rawDate = LocalDate.now().toString().replace("-", "");
+        return "partner_"+partnerCode+"_"+rawDate+"_"+getRandomAlphanumeric().substring(0,4);
+    }
+
+    public static String getRequestToken(HttpServletRequest request) throws AccessDeniedException {
+        if (Objects.isNull(request.getAttribute("accessToken")))
+            throw new AccessDeniedException("Access Token required");
+        return request.getAttribute("accessToken").toString();
+    };
 
     private static String[] getNullPropertyNames(Object source) {
         final BeanWrapper src = new BeanWrapperImpl(source);
@@ -60,4 +79,5 @@ public class AppUtils {
         String[] result = new String[emptyNames.size()];
         return emptyNames.toArray(result);
     }
+
 }
