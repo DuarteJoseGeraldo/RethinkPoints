@@ -8,7 +8,7 @@ CREATE TABLE `user`
     id         BIGINT PRIMARY KEY AUTO_INCREMENT,
     name       VARCHAR(255),
     cpf        VARCHAR(255),
-    house_id      BIGINT,
+    house_id   BIGINT,
     password   VARCHAR(255),
     points     FLOAT,
     last_login TIMESTAMP,

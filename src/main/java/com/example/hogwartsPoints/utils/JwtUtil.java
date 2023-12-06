@@ -4,24 +4,29 @@ import com.example.hogwartsPoints.dto.TokenDataDTO;
 import com.example.hogwartsPoints.dto.enums.LoginType;
 import com.example.hogwartsPoints.dto.enums.UserType;
 import com.example.hogwartsPoints.entity.AccessTokenEntity;
+import com.example.hogwartsPoints.entity.HotsiteEntity;
 import com.example.hogwartsPoints.entity.PartnerEntity;
 import com.example.hogwartsPoints.entity.UserEntity;
 import com.example.hogwartsPoints.respository.AccessTokenRepository;
+import com.example.hogwartsPoints.respository.HotsiteRepository;
 import com.example.hogwartsPoints.respository.PartnerRepository;
 import com.example.hogwartsPoints.respository.UserRepository;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityNotFoundException;
 import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class JwtUtil {
     @Value("${jwt.userSecret}")
     private String userSecret;
@@ -31,28 +36,42 @@ public class JwtUtil {
     private String partnerSecret;
     @Value("${jwt.partnerExpirationMs}")
     private long partnerExpirationMs;
+    @Value("${jwt.hotsiteSecret}")
+    private String hotsiteSecret;
     private final AccessTokenRepository accessTokenRepo;
     private final UserRepository userRepo;
     private final PartnerRepository partnerRepo;
+    private final HotsiteRepository hotsiteRepository;
 
     public String generateUserToken(TokenDataDTO tokenDataDTO) {
-        return tokenGenerator(tokenDataDTO, userExpirationMs, userSecret);
+        return accessTokenGenerator(tokenDataDTO, userExpirationMs, userSecret);
     }
 
     public String generatePartnerToken(TokenDataDTO tokenDataDTO) {
-        return tokenGenerator(tokenDataDTO, partnerExpirationMs, partnerSecret);
+        return accessTokenGenerator(tokenDataDTO, partnerExpirationMs, partnerSecret);
+    }
+
+    public String generateHotsiteToken(){
+        LocalDateTime expiration = LocalDateTime.now().plusYears(8000);
+        log.info("generateHotsiteToken() - 'Expiration date': {}", expiration);
+        return Jwts.builder().signWith(Keys.hmacShaKeyFor(hotsiteSecret.getBytes())).setExpiration(Date.from(expiration.atZone(ZoneId.systemDefault()).toInstant())).compact();
     }
 
     public UserEntity userTokenValidator(String token) throws Exception {
-        return userRepo.findByCpf(tokenValidator(token, userSecret).getUserIdentifier()).orElseThrow(() -> new EntityNotFoundException("Token Owner not Found"));
+        return userRepo.findByCpf(accessTokenValidator(token, userSecret).getUserIdentifier()).orElseThrow(() -> new EntityNotFoundException("Token Owner not Found"));
     }
 
     public PartnerEntity partnerTokenValidator(String token) throws Exception {
-        return partnerRepo.findByClientId(tokenValidator(token, partnerSecret).getUserIdentifier()).orElseThrow(() -> new EntityNotFoundException("Token Owner not Found"));
+        return partnerRepo.findByClientId(accessTokenValidator(token, partnerSecret).getUserIdentifier()).orElseThrow(() -> new EntityNotFoundException("Token Owner not Found"));
     }
 
-    public void disableTokenByUserIdentifier(String identifier){
-        if(accessTokenRepo.findByUserIdentifier(identifier).isPresent()){
+    public HotsiteEntity hotsiteTokenValidator (String token){
+        Jwts.parserBuilder().setSigningKey(Keys.hmacShaKeyFor(hotsiteSecret.getBytes())).build().parseClaimsJws((token)).getBody();
+        return hotsiteRepository.findById(token).orElseThrow(() -> new EntityNotFoundException("Hotsite Token Not Found")) ;
+    }
+
+    public void disableTokenByUserIdentifier(String identifier) {
+        if (accessTokenRepo.findByUserIdentifier(identifier).isPresent()) {
             accessTokenRepo.deleteByUserIdentifier(identifier);
         }
     }
@@ -64,7 +83,7 @@ public class JwtUtil {
         return userData;
     }
 
-    private String tokenGenerator(TokenDataDTO tokenDataDTO, long expirationTime, String secret) {
+    private String accessTokenGenerator(TokenDataDTO tokenDataDTO, long expirationTime, String secret) {
         Date expiration = new Date(System.currentTimeMillis() + expirationTime);
         String token = Jwts.builder()
                 .claim("userIdentifier", tokenDataDTO.getUserIdentifier())
@@ -81,16 +100,16 @@ public class JwtUtil {
         return token;
     }
 
-    private AccessTokenEntity tokenValidator(String token, String secret) throws AccessDeniedException {
+    private AccessTokenEntity accessTokenValidator(String token, String secret) throws AccessDeniedException {
         if (token.startsWith("HogwartsAppJWTToken ")) {
             String rawToken = token.substring(20).trim();
             Jwts.parserBuilder().setSigningKey(Keys.hmacShaKeyFor(secret.getBytes())).build().parseClaimsJws(rawToken).getBody();
-            return accessTokenRepo.findByUserIdentifier(dataExtractor(rawToken, secret).getUserIdentifier()).orElseThrow(() -> new AccessDeniedException("Token not Registered"));
+            return accessTokenRepo.findByUserIdentifier(accessTokenDataExtractor(rawToken, secret).getUserIdentifier()).orElseThrow(() -> new AccessDeniedException("Token not Registered"));
         }
         throw new UnsupportedJwtException("Invalid Token Prefix");
     }
 
-    private TokenDataDTO dataExtractor(String token, String secret) {
+    private TokenDataDTO accessTokenDataExtractor(String token, String secret) {
         Claims claims = extractClaims(token, secret);
 
         return TokenDataDTO.builder()

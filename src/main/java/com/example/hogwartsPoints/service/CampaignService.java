@@ -54,6 +54,11 @@ public class CampaignService {
         return MessagesDTO.builder().message("Campaign deleted successfully").build();
     }
 
+    public float calculatePoints(String idCampaign, Double total){
+        CampaignEntity campaign = campaignRepo.findByIdCampaignIgnoreCase(idCampaign).orElseThrow(() -> new EntityNotFoundException("Campaign Not Found"));
+        return (float) ((campaign.getOurParity() * total) * campaign.getPartnerParity());
+    }
+
     private void validateCampaignData(RegisterCampaignDTO campaignData) {
         if (campaignData.getStartAt().isBefore(LocalDateTime.now()))
             throw new DateTimeException("The start date of the campaign must be greater than the current time");
@@ -63,6 +68,7 @@ public class CampaignService {
             throw new IllegalArgumentException("Our Parity needs to be greater than 0");
         if (Objects.isNull(campaignData.getPartnerParity()) || campaignData.getPartnerParity() <= 0)
             throw new IllegalArgumentException("Partner Parity needs to be greater than 0");
+        campaignData.setIdCampaign(campaignData.getIdCampaign().replace(" ", "").toUpperCase());
     }
 
     private void validateCampaignData(CampaignEntity campaignData) {

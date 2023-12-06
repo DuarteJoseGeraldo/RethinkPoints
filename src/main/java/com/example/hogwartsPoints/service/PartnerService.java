@@ -12,7 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import static com.example.hogwartsPoints.utils.AppUtils.getRandomAlphanumeric;
-import static com.example.hogwartsPoints.utils.AppUtils.generatePartnerId;
+import static com.example.hogwartsPoints.utils.AppUtils.getPartnerClientId;
 import static com.example.hogwartsPoints.utils.AppUtils.copyNonNullProperties;
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
@@ -38,7 +38,7 @@ public class PartnerService {
                 .code(partnerData.getCode().toUpperCase())
                 .name(partnerData.getName())
                 .status(Status.ACTIVE)
-                .clientId(generatePartnerId(partnerData.getCode()))
+                .clientId(getPartnerClientId(partnerData.getCode()))
                 .clientSecret(getRandomAlphanumeric())
                 .createdAt(LocalDateTime.now()).build());
     }
