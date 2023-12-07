@@ -51,23 +51,12 @@ public class JwtUtil {
         return accessTokenGenerator(tokenDataDTO, partnerExpirationMs, partnerSecret);
     }
 
-    public String generateHotsiteToken(){
-        LocalDateTime expiration = LocalDateTime.now().plusYears(8000);
-        log.info("generateHotsiteToken() - 'Expiration date': {}", expiration);
-        return Jwts.builder().signWith(Keys.hmacShaKeyFor(hotsiteSecret.getBytes())).setExpiration(Date.from(expiration.atZone(ZoneId.systemDefault()).toInstant())).compact();
-    }
-
     public UserEntity userTokenValidator(String token) throws Exception {
         return userRepo.findByCpf(accessTokenValidator(token, userSecret).getUserIdentifier()).orElseThrow(() -> new EntityNotFoundException("Token Owner not Found"));
     }
 
     public PartnerEntity partnerTokenValidator(String token) throws Exception {
-        return partnerRepo.findByClientId(accessTokenValidator(token, partnerSecret).getUserIdentifier()).orElseThrow(() -> new EntityNotFoundException("Token Owner not Found"));
-    }
-
-    public HotsiteEntity hotsiteTokenValidator (String token){
-        Jwts.parserBuilder().setSigningKey(Keys.hmacShaKeyFor(hotsiteSecret.getBytes())).build().parseClaimsJws((token)).getBody();
-        return hotsiteRepository.findById(token).orElseThrow(() -> new EntityNotFoundException("Hotsite Token Not Found")) ;
+        return partnerRepo.findByCode(accessTokenValidator(token, partnerSecret).getUserIdentifier()).orElseThrow(() -> new EntityNotFoundException("Token Owner not Found"));
     }
 
     public void disableTokenByUserIdentifier(String identifier) {

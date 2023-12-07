@@ -9,9 +9,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
-
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
+import static com.example.hogwartsPoints.utils.AppUtils.getRandomAlphanumeric;
 
 @Service
 @Slf4j
@@ -26,14 +26,25 @@ public class HotsiteService {
         UserEntity user = jwtUtil.userTokenValidator(accessToken);
         HotsiteEntity hotsiteData = validateGetHotsiteTokenData(requestBody);
         hotsiteData.setCpf(user.getCpf());
-        hotsiteData.setToken(jwtUtil.generateHotsiteToken());
+        hotsiteData.setToken(getRandomAlphanumeric());
         hotsiteRepo.save(hotsiteData);
         return hotsiteData.getToken();
     }
 
+    public HotsiteEntity hotsiteTokenValidator (String token){
+        return hotsiteRepo.findById(token).orElseThrow(() -> new EntityNotFoundException("Hotsite Token Not Found")) ;
+    }
+
+    public void orderConfirmation (String hotsiteToken){
+        HotsiteEntity hotsite = hotsiteRepo.findById(hotsiteToken).orElseThrow(() -> new EntityNotFoundException("Hotsite Token not found - final"));
+        hotsite.setOrderConfirmation(true);
+        hotsiteRepo.save(hotsite);
+    }
+
     private HotsiteEntity validateGetHotsiteTokenData(MultiValueMap<String, String> requestBody) {
-        CampaignEntity campaign = campaignRepo.findByIdCampaignIgnoreCase(requestBody.getFirst("id_campaign")).orElseThrow(() -> new EntityNotFoundException("Campaign not found"));
-        PartnerEntity partner = partnerRepo.findByCode(requestBody.getFirst("partner_code")).orElseThrow(() -> new EntityNotFoundException("Campaign not found"));
+        CampaignEntity campaign = campaignRepo.findByIdCampaign(requestBody.getFirst("id_campaign")).orElseThrow(() -> new EntityNotFoundException("Campaign not found"));
+        PartnerEntity partner = partnerRepo.findByCode(requestBody.getFirst("partner_code")).orElseThrow(() -> new EntityNotFoundException("Partner not found"));
+        if (!campaign.getPartner().getCode().equals(partner.getCode())) throw new IllegalArgumentException("Campaign does not belong to this partner");
         return HotsiteEntity.builder().clickDate(LocalDateTime.now()).idCampaign(campaign.getIdCampaign()).partnerCode(partner.getCode()).build();
     }
 }

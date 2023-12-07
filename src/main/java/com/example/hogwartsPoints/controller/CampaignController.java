@@ -2,6 +2,7 @@ package com.example.hogwartsPoints.controller;
 
 import com.example.hogwartsPoints.dto.MessagesDTO;
 import com.example.hogwartsPoints.dto.register.RegisterCampaignDTO;
+import com.example.hogwartsPoints.dto.register.RegisterDefaultCampaignDTO;
 import com.example.hogwartsPoints.dto.update.UpdateCampaignDTO;
 import com.example.hogwartsPoints.entity.CampaignEntity;
 import com.example.hogwartsPoints.service.CampaignService;
@@ -20,8 +21,13 @@ public class CampaignController {
     private final CampaignService campaignService;
 
     @PostMapping(value = "/register")
-    public ResponseEntity<?> registerCampaign(@RequestBody RegisterCampaignDTO campaignData,  HttpServletRequest request) throws Exception {
+    public ResponseEntity<CampaignEntity> registerCampaign(@RequestBody RegisterCampaignDTO campaignData,  HttpServletRequest request) throws Exception {
         return ResponseEntity.created(URI.create("/campaign/register")).body(campaignService.registerCampaign(getRequestToken(request),campaignData));
+    }
+
+    @PostMapping(value = "/registerdefault")
+    public ResponseEntity<CampaignEntity> registerDefaultCampaign(@RequestBody RegisterDefaultCampaignDTO campaignData, HttpServletRequest request) throws Exception {
+        return ResponseEntity.created(URI.create("/campaign/register")).body(campaignService.registerDefaultCampaign(getRequestToken(request),campaignData));
     }
 
     @GetMapping(value = "/info")
