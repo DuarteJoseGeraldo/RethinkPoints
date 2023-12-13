@@ -9,7 +9,6 @@ jwt:
   userExpirationMs: 86400000 #1 dia
   partnerSecret: "5t6j77k8nj77719uuu936yc2ee06732p"
   partnerExpirationMs: 3600000 #1 hora
-  hotsiteSecret: "9j5f25x6as85739lko473gd5vd38576n"
 
 spring:
   application:

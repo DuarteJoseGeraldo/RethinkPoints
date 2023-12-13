@@ -39,7 +39,7 @@ public class OrdersEntity {
     @OneToMany(mappedBy = "order", cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
     private List<ItemEntity> items;
     @Column(name = "total")
-    private double total;
+    private float total;
     @Column(name = "change_date")
     private LocalDateTime changeDate;
     @Column(name = "points", nullable = false)

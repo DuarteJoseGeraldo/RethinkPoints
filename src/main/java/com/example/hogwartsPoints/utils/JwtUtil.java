@@ -36,12 +36,9 @@ public class JwtUtil {
     private String partnerSecret;
     @Value("${jwt.partnerExpirationMs}")
     private long partnerExpirationMs;
-    @Value("${jwt.hotsiteSecret}")
-    private String hotsiteSecret;
     private final AccessTokenRepository accessTokenRepo;
     private final UserRepository userRepo;
     private final PartnerRepository partnerRepo;
-    private final HotsiteRepository hotsiteRepository;
 
     public String generateUserToken(TokenDataDTO tokenDataDTO) {
         return accessTokenGenerator(tokenDataDTO, userExpirationMs, userSecret);

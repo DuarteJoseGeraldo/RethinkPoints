@@ -6,7 +6,10 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum OrderStatus {
-    WAITING_CONFIRMATION("waiting_confirmation");
+    WAITING_CONFIRMATION("waiting_confirmation"),
+    ORDER_CANCELED("order_canceled"),
+    ORDER_CONFIRMED("order_confirmed");
+
     private final String value;
 
     public static OrderStatus fromValue(String value) {

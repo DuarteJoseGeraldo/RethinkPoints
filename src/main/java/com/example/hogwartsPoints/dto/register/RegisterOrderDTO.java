@@ -1,6 +1,7 @@
 package com.example.hogwartsPoints.dto.register;
 
 import com.example.hogwartsPoints.dto.ItemDTO;
+import com.example.hogwartsPoints.dto.enums.OrderStatus;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
@@ -20,4 +21,5 @@ public class RegisterOrderDTO {
     private LocalDateTime orderDate;
     @NonNull
     private List<ItemDTO> items;
+    private OrderStatus status;
 }

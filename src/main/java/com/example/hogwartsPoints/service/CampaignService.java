@@ -60,9 +60,9 @@ public class CampaignService {
         return MessagesDTO.builder().message("Campaign deleted successfully").build();
     }
 
-    public float calculatePoints(String idCampaign, Double total) {
+    public float calculatePoints(String idCampaign, float total) {
         CampaignEntity campaign = campaignRepo.findByIdCampaign(idCampaign).orElseThrow(() -> new EntityNotFoundException("Campaign Not Found"));
-        return (float) ((campaign.getOurParity() * total) * campaign.getPartnerParity());
+        return (float) (total/campaign.getPartnerParity()) * campaign.getOurParity();
     }
 
     private CampaignEntity validateCampaignData(RegisterCampaignDTO campaignData) {

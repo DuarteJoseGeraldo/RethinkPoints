@@ -12,10 +12,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +30,7 @@ public class OrdersService {
     private final UserRepository userRepo;
     private final CampaignRepository campaignRepo;
     private final PartnerRepository partnerRepo;
+    private final HotsiteRepository hotsiteRepo;
     private final JwtUtil jwtUtil;
     private final CampaignService campaignService;
     private final HotsiteService hotsiteService;
@@ -41,7 +47,36 @@ public class OrdersService {
         return ordersRepo.save(newOrder);
     }
 
+    public OrdersEntity confirmOrder(String accessToken, RegisterOrderDTO orderData) throws Exception {
+        PartnerEntity partnerData = jwtUtil.partnerTokenValidator(accessToken);
+        OrdersEntity pendingOrder = ordersRepo.findById(orderData.getOrderNumber() + "_" + partnerData.getCode()).orElseThrow(() -> new EntityNotFoundException("Order not found"));
+        validateConfirmOrderData(orderData, pendingOrder);
+        if (orderData.getStatus().equals(OrderStatus.ORDER_CANCELED)) return ordersRepo.save(pendingOrder);
+        validateItemsList(orderData, pendingOrder);
+        pendingOrder.setTotal(calculateTotalPrice(pendingOrder.getItems()));
+        pendingOrder.setPoints(campaignService.calculatePoints(hotsiteService.hotsiteTokenValidator(orderData.getToken()).getIdCampaign(), pendingOrder.getTotal()));
+        pendingOrder.setStatus(orderData.getStatus());
+        return ordersRepo.save(pendingOrder);
+    }
+
+    private void validateConfirmOrderData(RegisterOrderDTO confirmationData, OrdersEntity pendingOrder) {
+        if (!pendingOrder.getStatus().equals(OrderStatus.WAITING_CONFIRMATION))
+            throw new IllegalArgumentException("Order status has already been changed");
+        if (!Objects.equals(confirmationData.getUserCpf(), pendingOrder.getUserCpf()))
+            throw new IllegalArgumentException("Order does not belong to this user");
+        if (Objects.equals(confirmationData.getToken(), pendingOrder.getToken()))
+            hotsiteService.hotsiteTokenValidator(confirmationData.getToken());
+        else throw new IllegalArgumentException("Order does not belong to this hotsite click token");
+        if (!confirmationData.getOrderDate().equals(pendingOrder.getOrderDate()))
+            throw new IllegalArgumentException("Order date does not match");
+        if (confirmationData.getStatus().equals(OrderStatus.ORDER_CANCELED))
+            pendingOrder.setStatus(OrderStatus.ORDER_CANCELED);
+        pendingOrder.setChangeDate(LocalDateTime.now());
+    }
+
     private OrdersEntity validateOrderData(RegisterOrderDTO orderData, PartnerEntity requestPartner) {
+        if (ordersRepo.findByToken(orderData.getToken()).isPresent())
+            throw new EntityExistsException("Hotsite token is already linked to an order");
         if (userRepo.findByCpf(orderData.getUserCpf()).isEmpty())
             throw new EntityNotFoundException("User of order not found");
         HotsiteEntity hotsiteData = hotsiteService.hotsiteTokenValidator(orderData.getToken());
@@ -50,13 +85,16 @@ public class OrdersService {
         if (!requestPartner.getCode().equals(hotsiteData.getPartnerCode()))
             throw new IllegalArgumentException("Hotsite token does not belong to the partner of the order");
         PartnerEntity partner = partnerRepo.findByCode(requestPartner.getCode()).orElseThrow(() -> new EntityNotFoundException("Partner Not Found"));
-        if(partner.getStatus().equals(Status.INACTIVE)) throw new IllegalArgumentException("Partner is not active");
+        if (partner.getStatus().equals(Status.INACTIVE)) throw new IllegalArgumentException("Partner is not active");
         CampaignEntity campaignData = campaignRepo.findByIdCampaign(hotsiteData.getIdCampaign()).orElseThrow(() -> new EntityNotFoundException("Campaign not found at validation"));
-        if (orderData.getOrderDate().isAfter(campaignData.getEndAt()))
+        if (orderData.getOrderDate().isAfter(campaignData.getEndAt())) {
             campaignData = campaignRepo.findByIdCampaign("DEFAULT" + hotsiteData.getPartnerCode()).orElseThrow(() -> new EntityNotFoundException("Default Campaign not found"));
-        double total = calculateTotalPrice(orderData.getItems());
+            hotsiteData.setIdCampaign(campaignData.getIdCampaign());
+            hotsiteRepo.save(hotsiteData);
+        }
+        float total = calculateTotalPrice(orderData.getItems());
         return OrdersEntity.builder()
-                .id(orderData.getOrderNumber() + requestPartner.getCode())
+                .id(orderData.getOrderNumber() + "_" + requestPartner.getCode())
                 .userCpf(orderData.getUserCpf())
                 .partnerCode(requestPartner.getCode())
                 .token(orderData.getToken())
@@ -65,6 +103,33 @@ public class OrdersService {
                 .status(OrderStatus.WAITING_CONFIRMATION)
                 .total(total)
                 .points(campaignService.calculatePoints(campaignData.getIdCampaign(), total)).build();
+    }
+
+    private void validateItemsList(RegisterOrderDTO confirmationData, OrdersEntity pendingOrder) {
+        if (confirmationData.getItems().size() != pendingOrder.getItems().size()) {
+            throw new IllegalArgumentException("Missing or extra item in the list, send the same items of the notification");
+        }
+
+        // Criar um conjunto de SKUs a partir dos itens de confirmação
+        Set<String> confirmationSkus = confirmationData.getItems().stream()
+                .map(ItemDTO::getSku)
+                .collect(Collectors.toSet());
+
+        for (ItemEntity pendingItem : pendingOrder.getItems()) {
+            // Verificar se a SKU do item pendente está presente nos itens de confirmação
+            if (confirmationSkus.contains(pendingItem.getSku())) {
+                // Encontrar o item correspondente nos itens de confirmação
+                ItemDTO matchingConfirmationItem = confirmationData.getItems().stream()
+                        .filter(confItem -> confItem.getSku().equals(pendingItem.getSku()))
+                        .findFirst()
+                        .orElseThrow(() -> new IllegalArgumentException("Unexpected error: matching item not found."));
+
+                // Atualizar a quantidade do item pendente
+                pendingItem.setQuantity(Math.max(matchingConfirmationItem.getQuantity(), 0));
+            } else {
+                throw new IllegalArgumentException("Received order sku that does not belong to the order being processed");
+            }
+        }
     }
 
     private List<ItemEntity> buildItemsList(List<ItemDTO> items, OrdersEntity order) {
@@ -83,10 +148,14 @@ public class OrdersService {
         return itemList;
     }
 
-    private double calculateTotalPrice(List<ItemDTO> items) {
-        double total = 0;
-        for (ItemDTO item : items) {
-            total += item.getPrice() * item.getQuantity();
+    private <T> float calculateTotalPrice(List<T> items) {
+        float total = 0;
+        for (T item : items) {
+            if (item instanceof ItemDTO) {
+                total += (float) (((ItemDTO) item).getPrice() * ((ItemDTO) item).getQuantity());
+            } else if (item instanceof ItemEntity) {
+                total += (float) (((ItemEntity) item).getPrice() * ((ItemEntity) item).getQuantity());
+            }
         }
         return total;
     }

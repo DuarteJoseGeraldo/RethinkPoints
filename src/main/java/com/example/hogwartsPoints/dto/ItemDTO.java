@@ -8,10 +8,7 @@ import lombok.NonNull;
 @Data
 @Builder
 public class ItemDTO {
-    @NonNull
     private String sku;
-    @NonNull
     private double price;
-    @NonNull
     private int quantity;
 }
