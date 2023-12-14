@@ -35,7 +35,8 @@ public class OrdersService {
     private final CampaignService campaignService;
     private final HotsiteService hotsiteService;
 
-    public OrdersEntity getInfo(String id) {
+    public OrdersEntity getInfo(String accessToken,String id) throws Exception {
+        jwtUtil.adminValidator(accessToken);
         return ordersRepo.findById(id).orElseThrow(() -> new EntityNotFoundException("order not found"));
     }
 

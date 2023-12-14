@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import static com.example.hogwartsPoints.utils.AppUtils.getRequestToken;
 import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
+import java.nio.file.AccessDeniedException;
 
 @Controller
 @RequestMapping(value = "/order")
@@ -17,8 +18,8 @@ public class OrdersController {
     private final OrdersService ordersService;
 
     @GetMapping()
-    public ResponseEntity<?> getInfo(@RequestParam String id) {
-        return ResponseEntity.ok(ordersService.getInfo(id));
+    public ResponseEntity<?> getInfo(@RequestParam String id, HttpServletRequest request) throws Exception {
+        return ResponseEntity.ok(ordersService.getInfo(getRequestToken(request) ,id));
     }
 
     @PostMapping(value = "/notification")
