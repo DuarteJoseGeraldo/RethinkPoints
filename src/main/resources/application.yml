@@ -5,8 +5,10 @@ logging:
     org.springframework.cache: "DEBUG"
 
 jwt:
-  secret: "3a1f85c2bd78119aee875af6db72501c"
-  expirationMs: 604800000
+  userSecret: "3a1f85c2bd78119aee875af6db72501c"
+  userExpirationMs: 86400000 #1 dia
+  partnerSecret: "5t6j77k8nj77719uuu936yc2ee06732p"
+  partnerExpirationMs: 3600000 #1 hora
 
 spring:
   application:

@@ -1,4 +1,4 @@
-package com.example.hogwartsPoints.dto;
+package com.example.hogwartsPoints.dto.register;
 import lombok.*;
 
 import java.time.LocalDateTime;

@@ -9,7 +9,6 @@ import lombok.NonNull;
 public class LoginDTO {
     @NonNull
     private String cpf;
-
     @NonNull
     private String password;
 }

@@ -1,63 +1,105 @@
 package com.example.hogwartsPoints.utils;
 
 import com.example.hogwartsPoints.dto.TokenDataDTO;
-import com.example.hogwartsPoints.service.UserService;
+import com.example.hogwartsPoints.dto.enums.LoginType;
+import com.example.hogwartsPoints.dto.enums.UserType;
+import com.example.hogwartsPoints.entity.AccessTokenEntity;
+import com.example.hogwartsPoints.entity.PartnerEntity;
+import com.example.hogwartsPoints.entity.UserEntity;
+import com.example.hogwartsPoints.respository.AccessTokenRepository;
+import com.example.hogwartsPoints.respository.PartnerRepository;
+import com.example.hogwartsPoints.respository.UserRepository;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.persistence.EntityNotFoundException;
 import java.nio.file.AccessDeniedException;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Component
 @RequiredArgsConstructor
 public class JwtUtil {
-    @Value("${jwt.secret}")
-    private String secret;
-    @Value("${jwt.expirationMs}")
-    private long expirationMs;
-    private final UserService userService;
+    @Value("${jwt.userSecret}")
+    private String userSecret;
+    @Value("${jwt.userExpirationMs}")
+    private long userExpirationMs;
+    @Value("${jwt.partnerSecret}")
+    private String partnerSecret;
+    @Value("${jwt.partnerExpirationMs}")
+    private long partnerExpirationMs;
+    private final AccessTokenRepository accessTokenRepo;
+    private final UserRepository userRepo;
+    private final PartnerRepository partnerRepo;
 
-    public String generateToken(TokenDataDTO tokenDataDTO) {
-        Date expiration = new Date(System.currentTimeMillis() + expirationMs);
+    public String generateUserToken(TokenDataDTO tokenDataDTO) {
+        return tokenGenerator(tokenDataDTO, userExpirationMs, userSecret);
+    }
 
-        return Jwts.builder()
-                .claim("id", tokenDataDTO.getId())
-                .claim("name", tokenDataDTO.getName())
-                .claim("userType", tokenDataDTO.getUserType())
+    public String generatePartnerToken(TokenDataDTO tokenDataDTO) {
+        return tokenGenerator(tokenDataDTO, partnerExpirationMs, partnerSecret);
+    }
+
+    public UserEntity userTokenValidator(String token) throws Exception {
+        return userRepo.findByCpf(tokenValidator(token, userSecret).getUserIdentifier()).orElseThrow(() -> new EntityNotFoundException("Token Owner not Found"));
+    }
+
+    public PartnerEntity partnerTokenValidator(String token) throws Exception {
+        return partnerRepo.findByClientId(tokenValidator(token, partnerSecret).getUserIdentifier()).orElseThrow(() -> new EntityNotFoundException("Token Owner not Found"));
+    }
+
+    public void disableTokenByUserIdentifier(String identifier){
+        if(accessTokenRepo.findByUserIdentifier(identifier).isPresent()){
+            accessTokenRepo.deleteByUserIdentifier(identifier);
+        }
+    }
+
+    public UserEntity adminValidator(String token) throws Exception {
+        UserEntity userData = userTokenValidator(token);
+        if (!userData.getUserType().equals(UserType.ADMIN))
+            throw new AccessDeniedException("User type is not administrator");
+        return userData;
+    }
+
+    private String tokenGenerator(TokenDataDTO tokenDataDTO, long expirationTime, String secret) {
+        Date expiration = new Date(System.currentTimeMillis() + expirationTime);
+        String token = Jwts.builder()
+                .claim("userIdentifier", tokenDataDTO.getUserIdentifier())
+                .claim("loginType", tokenDataDTO.getLoginType().toString())
                 .setExpiration(expiration)
                 .signWith(Keys.hmacShaKeyFor(secret.getBytes()))
                 .compact();
+        accessTokenRepo.save(AccessTokenEntity.builder()
+                .userIdentifier(tokenDataDTO.getUserIdentifier())
+                .token(token)
+                .loginType(tokenDataDTO.getLoginType())
+                .createdAt(LocalDateTime.now())
+                .build());
+        return token;
     }
 
-    public TokenDataDTO extractTokenData(String token) {
-        Claims claims = extractClaims(token);
-        return TokenDataDTO.builder()
-                .id(claims.get("id", Long.class))
-                .name(claims.get("name", String.class))
-                .userType(claims.get("userType", String.class))
-                .build();
-    }
-
-    private Claims extractClaims(String token) {
-        return Jwts.parserBuilder().setSigningKey(Keys.hmacShaKeyFor(secret.getBytes())).build().parseClaimsJws(token).getBody();
-    }
-
-    public TokenDataDTO tokenValidator (String token) throws Exception {
+    private AccessTokenEntity tokenValidator(String token, String secret) throws AccessDeniedException {
         if (token.startsWith("HogwartsAppJWTToken ")) {
             String rawToken = token.substring(20).trim();
             Jwts.parserBuilder().setSigningKey(Keys.hmacShaKeyFor(secret.getBytes())).build().parseClaimsJws(rawToken).getBody();
-            TokenDataDTO tokenData = extractTokenData(rawToken);
-            if(!userService.getUserDataById(tokenData.getId()).getLastValidToken().equals(rawToken)) throw new UnsupportedJwtException("Expired Token");
-            return tokenData;
+            return accessTokenRepo.findByUserIdentifier(dataExtractor(rawToken, secret).getUserIdentifier()).orElseThrow(() -> new AccessDeniedException("Token not Registered"));
         }
         throw new UnsupportedJwtException("Invalid Token Prefix");
     }
 
-    public void adminValidator(String type) throws Exception {
-        if (!type.equals("admin")) throw new AccessDeniedException("user does not have authorization");
+    private TokenDataDTO dataExtractor(String token, String secret) {
+        Claims claims = extractClaims(token, secret);
+
+        return TokenDataDTO.builder()
+                .userIdentifier(claims.get("userIdentifier", String.class))
+                .loginType(LoginType.fromValue(claims.get("loginType", String.class)))
+                .build();
+    }
+
+    private Claims extractClaims(String token, String secret) {
+        return Jwts.parserBuilder().setSigningKey(Keys.hmacShaKeyFor(secret.getBytes())).build().parseClaimsJws(token).getBody();
     }
 }
