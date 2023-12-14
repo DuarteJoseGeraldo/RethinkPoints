@@ -51,7 +51,7 @@ public class UserController {
         return ResponseEntity.ok(userService.changePassword(getRequestToken(request), body));
     }
 
-    @DeleteMapping(value = "/disable", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    @PostMapping(value = "/disable", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public ResponseEntity<?> disableUser(@RequestBody MultiValueMap<String, String> body, HttpServletRequest request) throws Exception {
         return ResponseEntity.ok(userService.disableUser(getRequestToken(request), Objects.requireNonNull(body.getFirst("password"))));
     }

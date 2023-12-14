@@ -21,8 +21,8 @@ import java.security.SignatureException;
 import java.time.DateTimeException;
 import java.util.NoSuchElementException;
 
-@RestControllerAdvice
-@Component
+//@RestControllerAdvice
+//@Component
 @Slf4j
 public class ExceptionController {
     /*---------------------------------GENERIC---------------------------------*/

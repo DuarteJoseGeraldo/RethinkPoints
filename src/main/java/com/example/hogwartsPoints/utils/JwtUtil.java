@@ -57,9 +57,8 @@ public class JwtUtil {
     }
 
     public void disableTokenByUserIdentifier(String identifier) {
-        if (accessTokenRepo.findByUserIdentifier(identifier).isPresent()) {
-            accessTokenRepo.deleteByUserIdentifier(identifier);
-        }
+        AccessTokenEntity token = accessTokenRepo.findByUserIdentifier(identifier).orElseThrow(()-> new EntityNotFoundException("Hotsite Not Found"));
+        accessTokenRepo.delete(token);
     }
 
     public UserEntity adminValidator(String token) throws Exception {
