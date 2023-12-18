@@ -22,5 +22,4 @@ public class HouseEntity {
     private  long id;
     @Column(name = "name", unique = true)
     private String name;
-
 }

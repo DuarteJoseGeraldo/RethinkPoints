@@ -49,8 +49,8 @@ public class CampaignService {
         jwtUtil.adminValidator(accessToken);
         CampaignEntity campaignData = campaignRepo.findById(campaignId).orElseThrow(() -> new EntityNotFoundException("Campaign Not Found"));
         copyNonNullProperties(campaignNewData, campaignData);
-        validateCampaignData(campaignData);
-        log.info("updateCampaignData() - 'Campaign atualizada': {}", campaignData);
+        log.info("updateCampaignData() - 'copyNonNullProperties': {}", campaignData);
+        validateUpdateCampaignData(campaignData);
         return campaignRepo.save(campaignData);
     }
 
@@ -106,10 +106,10 @@ public class CampaignService {
                 .build();
     }
 
-    private void validateCampaignData(CampaignEntity campaignData) {
-        if (campaignData.getStartAt().isBefore(LocalDateTime.now()))
+    private void validateUpdateCampaignData(CampaignEntity campaignData) {
+        if (!campaignData.getIdCampaign().contains("DEFAULT") && campaignData.getStartAt().isBefore(LocalDateTime.now()))
             throw new DateTimeException("The start date of the campaign must be greater than the current time");
-        if (campaignData.getStartAt().isAfter(campaignData.getEndAt()))
+        if (!campaignData.getIdCampaign().contains("DEFAULT") && campaignData.getStartAt().isAfter(campaignData.getEndAt()))
             throw new DateTimeException("The campaign start date must be less than the end date");
         if (Objects.isNull(campaignData.getOurParity()) || campaignData.getOurParity() <= 0)
             throw new IllegalArgumentException("Our Parity needs to be greater than 0");
