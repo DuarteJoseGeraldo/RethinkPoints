@@ -1,9 +1,12 @@
 package com.example.hogwartsPoints.entity;
 
+import com.example.hogwartsPoints.dto.enums.OrderStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.FetchMode;
+import org.hibernate.annotations.Fetch;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -14,8 +17,8 @@ import java.util.List;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "order")
-public class OrderEntity {
+@Table(name = "orders")
+public class OrdersEntity {
     @Id
     @Basic(optional = false)
     @Column(name = "id", unique = true, nullable = false)
@@ -23,7 +26,7 @@ public class OrderEntity {
     @Column(name = "user_cpf", nullable = false)
     private String userCpf;
     @Column(name = "partner_code", nullable = false)
-    private String partner_code;
+    private String partnerCode;
     @Column(name = "token", nullable = false)
     private String token;
     @Column(name = "order_number", nullable = false)
@@ -31,11 +34,12 @@ public class OrderEntity {
     @Column(name = "order_date", nullable = false)
     private LocalDateTime orderDate;
     @Column(name = "status", nullable = false)
-    private String status;
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Enumerated(EnumType.STRING)
+    private OrderStatus status;
+    @OneToMany(mappedBy = "order", cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
     private List<ItemEntity> items;
     @Column(name = "total")
-    private double total;
+    private float total;
     @Column(name = "change_date")
     private LocalDateTime changeDate;
     @Column(name = "points", nullable = false)
