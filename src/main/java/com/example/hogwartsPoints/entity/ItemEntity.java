@@ -22,7 +22,7 @@ public class ItemEntity {
     @MapsId("orderId") // Mapeia a coluna orderId da chave composta
     @JoinColumn(name = "order_id")
     @JsonIgnore // Evita a serialização infinita
-    private OrderEntity order;
+    private OrdersEntity order;
     @Column(name = "sku", unique = true, nullable = false)
     private String sku;
     @Column(name = "price", nullable = false)

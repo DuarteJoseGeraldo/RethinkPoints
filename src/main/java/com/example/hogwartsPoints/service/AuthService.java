@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
 import javax.persistence.EntityNotFoundException;
 import java.nio.file.AccessDeniedException;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Service
@@ -28,6 +29,8 @@ public class AuthService {
 
     public String getUserToken(MultiValueMap<String, String> loginData) throws Exception {
         UserEntity userData = validateUserData(loginData);
+        userData.setLastLogin(LocalDateTime.now());
+        userRepo.save(userData);
         return jwtUtil.generateUserToken(TokenDataDTO.builder().loginType(LoginType.COMMON_AUTH).userIdentifier(userData.getCpf()).build());
     }
 

@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS `order` (
     `user_cpf` VARCHAR(255) NOT NULL,
     `partner_code` VARCHAR(255) NOT NULL,
     `token` VARCHAR(255) NOT NULL,
-    `order_number` VARCHAR(255) NOT NULL,
+    `order_number` VARCHAR(255) UNIQUE NOT NULL,
     `order_date` DATETIME NOT NULL,
     `status` VARCHAR(255) NOT NULL,
     `total` DOUBLE,

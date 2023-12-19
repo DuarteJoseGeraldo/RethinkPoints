@@ -52,7 +52,7 @@ public class AppUtils {
         return UUID.randomUUID().toString().replace("-", "");
     }
 
-    public static String generatePartnerId( String partnerCode) {
+    public static String getPartnerClientId(String partnerCode) {
         String rawDate = LocalDate.now().toString().replace("-", "");
         return "partner_"+partnerCode+"_"+rawDate+"_"+getRandomAlphanumeric().substring(0,4);
     }

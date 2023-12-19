@@ -1,74 +1,115 @@
 package com.example.hogwartsPoints.service;
 
 import com.example.hogwartsPoints.dto.MessagesDTO;
+import com.example.hogwartsPoints.dto.enums.Status;
 import com.example.hogwartsPoints.dto.register.RegisterCampaignDTO;
+import com.example.hogwartsPoints.dto.register.RegisterDefaultCampaignDTO;
 import com.example.hogwartsPoints.dto.update.UpdateCampaignDTO;
 import com.example.hogwartsPoints.entity.CampaignEntity;
+import com.example.hogwartsPoints.entity.PartnerEntity;
 import com.example.hogwartsPoints.respository.CampaignRepository;
+import com.example.hogwartsPoints.respository.PartnerRepository;
 import com.example.hogwartsPoints.utils.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
 import static com.example.hogwartsPoints.utils.AppUtils.copyNonNullProperties;
+
+import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.util.Objects;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class CampaignService {
     private final CampaignRepository campaignRepo;
+    private final PartnerRepository partnerRepo;
     private final JwtUtil jwtUtil;
 
     public CampaignEntity registerCampaign(String accessToken, RegisterCampaignDTO campaignData) throws Exception {
         jwtUtil.adminValidator(accessToken);
-        validateCampaignData(campaignData);
-        return campaignRepo.save(CampaignEntity.builder()
+        return campaignRepo.save(validateCampaignData(campaignData));
+    }
+
+    public CampaignEntity registerDefaultCampaign(String accessToken, RegisterDefaultCampaignDTO campaignData) throws Exception {
+        jwtUtil.adminValidator(accessToken);
+        return campaignRepo.save(validateDefaultCampaignData(campaignData));
+    }
+
+    public CampaignEntity getCampaignDataByIdCampaign(String accessToken, String idCampaign) throws Exception {
+        jwtUtil.userTokenValidator(accessToken);
+        return campaignRepo.findByIdCampaign(idCampaign).orElseThrow(() -> new EntityNotFoundException("Campaign Not Found"));
+    }
+
+    public CampaignEntity updateCampaignData(String accessToken, Long campaignId, UpdateCampaignDTO campaignNewData) throws Exception {
+        jwtUtil.adminValidator(accessToken);
+        CampaignEntity campaignData = campaignRepo.findById(campaignId).orElseThrow(() -> new EntityNotFoundException("Campaign Not Found"));
+        copyNonNullProperties(campaignNewData, campaignData);
+        log.info("updateCampaignData() - 'copyNonNullProperties': {}", campaignData);
+        validateUpdateCampaignData(campaignData);
+        return campaignRepo.save(campaignData);
+    }
+
+    public MessagesDTO deleteCampaign(String accessToken, Long id) throws Exception {
+        jwtUtil.adminValidator(accessToken);
+        campaignRepo.deleteById(id);
+        return MessagesDTO.builder().message("Campaign deleted successfully").build();
+    }
+
+    public float calculatePoints(String idCampaign, float total) {
+        CampaignEntity campaign = campaignRepo.findByIdCampaign(idCampaign).orElseThrow(() -> new EntityNotFoundException("Campaign Not Found"));
+        return (float) (total/campaign.getPartnerParity()) * campaign.getOurParity();
+    }
+
+    private CampaignEntity validateCampaignData(RegisterCampaignDTO campaignData) {
+        if (campaignData.getStartAt().isBefore(LocalDateTime.now()))
+            throw new DateTimeException("The start date of the campaign must be greater than the current time");
+        if (campaignData.getStartAt().isAfter(campaignData.getEndAt()))
+            throw new DateTimeException("The campaign start date must be less than the end date");
+        if (campaignData.getOurParity() <= 0)
+            throw new IllegalArgumentException("Our Parity needs to be greater than 0");
+        if (campaignData.getPartnerParity() <= 0)
+            throw new IllegalArgumentException("Partner Parity needs to be greater than 0");
+        PartnerEntity partner = partnerRepo.findByCode(campaignData.getPartnerCode()).orElseThrow(() -> new EntityNotFoundException("Partner Not Found"));
+        if(partner.getStatus().equals(Status.INACTIVE)) throw new IllegalArgumentException("Partner is not active");
+        campaignData.setIdCampaign(campaignData.getIdCampaign().replace(" ", "").toUpperCase());
+        return CampaignEntity.builder()
                 .idCampaign(campaignData.getIdCampaign())
                 .description(campaignData.getDescription())
                 .ourParity(campaignData.getOurParity())
                 .partnerParity(campaignData.getPartnerParity())
                 .startAt(campaignData.getStartAt())
                 .endAt(campaignData.getEndAt())
-                .build());
+                .partner(partner)
+                .build();
     }
 
-    public CampaignEntity getCampaignDataByIdCampaign(String accessToken,String idCampaign) throws Exception {
-        jwtUtil.userTokenValidator(accessToken);
-        return campaignRepo.findByIdCampaignIgnoreCase(idCampaign).orElseThrow(() -> new EntityNotFoundException("Campaign Not Found"));
-    }
-
-    public CampaignEntity updateCampaignData(String accessToken,Long campaignId , UpdateCampaignDTO campaignNewData) throws Exception {
-        jwtUtil.adminValidator(accessToken);
-        CampaignEntity campaignData = campaignRepo.findById(campaignId).orElseThrow(() -> new EntityNotFoundException("Campaign Not Found"));
-        copyNonNullProperties(campaignNewData, campaignData);
-        validateCampaignData(campaignData);
-        log.info("updateCampaignData() - 'Campaign atualizada': {}", campaignData);
-        return campaignRepo.save(campaignData);
-    }
-
-    public MessagesDTO deleteCampaign(String accessToken,Long id) throws Exception {
-        jwtUtil.adminValidator(accessToken);
-        campaignRepo.deleteById(id);
-        return MessagesDTO.builder().message("Campaign deleted successfully").build();
-    }
-
-    private void validateCampaignData(RegisterCampaignDTO campaignData) {
-        if (campaignData.getStartAt().isBefore(LocalDateTime.now()))
-            throw new DateTimeException("The start date of the campaign must be greater than the current time");
-        if (campaignData.getStartAt().isAfter(campaignData.getEndAt()))
-            throw new DateTimeException("The campaign start date must be less than the end date");
-        if (Objects.isNull(campaignData.getOurParity()) || campaignData.getOurParity() <= 0)
+    private CampaignEntity validateDefaultCampaignData(RegisterDefaultCampaignDTO campaignData) {
+        if (campaignData.getOurParity() <= 0)
             throw new IllegalArgumentException("Our Parity needs to be greater than 0");
-        if (Objects.isNull(campaignData.getPartnerParity()) || campaignData.getPartnerParity() <= 0)
+        if (campaignData.getPartnerParity() <= 0)
             throw new IllegalArgumentException("Partner Parity needs to be greater than 0");
+        PartnerEntity partner = partnerRepo.findByCode(campaignData.getPartnerCode()).orElseThrow(() -> new EntityNotFoundException("Partner Not Found"));
+        if(partner.getStatus().equals(Status.INACTIVE)) throw new IllegalArgumentException("Partner is not active");
+        if(campaignRepo.findByIdCampaign("DEFAULT"+campaignData.getPartnerCode()).isPresent()) throw new EntityExistsException("Partner default campaign already registered");
+        return CampaignEntity.builder()
+                .idCampaign("DEFAULT"+campaignData.getPartnerCode())
+                .description("Campanha padrao para "+partner.getName())
+                .ourParity(campaignData.getOurParity())
+                .partnerParity(campaignData.getPartnerParity())
+                .startAt(LocalDateTime.now())
+                .partner(partner)
+                .build();
     }
 
-    private void validateCampaignData(CampaignEntity campaignData) {
-        if (campaignData.getStartAt().isBefore(LocalDateTime.now()))
+    private void validateUpdateCampaignData(CampaignEntity campaignData) {
+        if (!campaignData.getIdCampaign().contains("DEFAULT") && campaignData.getStartAt().isBefore(LocalDateTime.now()))
             throw new DateTimeException("The start date of the campaign must be greater than the current time");
-        if (campaignData.getStartAt().isAfter(campaignData.getEndAt()))
+        if (!campaignData.getIdCampaign().contains("DEFAULT") && campaignData.getStartAt().isAfter(campaignData.getEndAt()))
             throw new DateTimeException("The campaign start date must be less than the end date");
         if (Objects.isNull(campaignData.getOurParity()) || campaignData.getOurParity() <= 0)
             throw new IllegalArgumentException("Our Parity needs to be greater than 0");
