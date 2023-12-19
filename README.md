@@ -4,6 +4,9 @@
 
 Este projeto é parte do programa de estudo de Java para estagiários Rethink que entraram no cliente Esfera. O objetivo é ensinar a linguagem Java dentro do contexto do negócio do Cliente Esfera, proporcionando uma introdução ao desenvolvimento de software relacionado a pontos, cashbacks e resgate.
 
+### Documentação Completa
+- [Estudo Java - Projeto HPEsf](https://docs.google.com/document/d/1rk-zCG1u70NPd8OamVYfpIoayNgdUcYM5GBAq5BuImE/edit?usp=sharing)
+
 ## Especificações
 
 O projeto utiliza as seguintes tecnologias e ferramentas:
