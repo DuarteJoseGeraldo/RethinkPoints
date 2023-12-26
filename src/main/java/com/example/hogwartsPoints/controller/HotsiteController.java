@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 public class HotsiteController {
     private final HotsiteService hotsiteService;
     @GetMapping(value = "/click", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public ResponseEntity<?> getHotsiteToken(@RequestBody MultiValueMap<String, String> requestBody, HttpServletRequest request) throws Exception {
+    public ResponseEntity<String> getHotsiteToken(@RequestBody MultiValueMap<String, String> requestBody, HttpServletRequest request) throws Exception {
         return ResponseEntity.ok(hotsiteService.getHotsiteToken(getRequestToken(request),requestBody));
     }
 }

@@ -3,6 +3,8 @@ import static com.example.hogwartsPoints.utils.AppUtils.getRandomAlphanumeric;
 public class TestMain {
 
     public static void main(String[] args){
-        System.out.println(getRandomAlphanumeric());
+
+
+
     }
 }
