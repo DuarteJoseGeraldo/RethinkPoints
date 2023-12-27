@@ -72,6 +72,11 @@ public class OrdersService {
             throw new IllegalArgumentException("Order date does not match");
         if (confirmationData.getStatus().equals(OrderStatus.ORDER_CANCELED))
             pendingOrder.setStatus(OrderStatus.ORDER_CANCELED);
+        if(!confirmationData.getCreditDate().equals(pendingOrder.getCreditDate())){
+            if(confirmationData.getCreditDate().isBefore(confirmationData.getOrderDate())){
+                throw new IllegalArgumentException("Credit that should be greater than order date");
+            } else pendingOrder.setCreditDate(confirmationData.getCreditDate());
+        }
         pendingOrder.setChangeDate(LocalDateTime.now());
     }
 
@@ -93,6 +98,7 @@ public class OrdersService {
             hotsiteData.setIdCampaign(campaignData.getIdCampaign());
             hotsiteRepo.save(hotsiteData);
         }
+        if(orderData.getCreditDate().isBefore(orderData.getOrderDate())) throw new IllegalArgumentException("Credit that should be greater than order date");
         float total = calculateTotalPrice(orderData.getItems());
         return OrdersEntity.builder()
                 .id(orderData.getOrderNumber() + "_" + requestPartner.getCode())
@@ -103,7 +109,8 @@ public class OrdersService {
                 .orderDate(orderData.getOrderDate())
                 .status(OrderStatus.WAITING_CONFIRMATION)
                 .total(total)
-                .points(campaignService.calculatePoints(campaignData.getIdCampaign(), total)).build();
+                .points(campaignService.calculatePoints(campaignData.getIdCampaign(), total))
+                .creditDate(orderData.getCreditDate()).build();
     }
 
     private void validateItemsList(RegisterOrderDTO confirmationData, OrdersEntity pendingOrder) {

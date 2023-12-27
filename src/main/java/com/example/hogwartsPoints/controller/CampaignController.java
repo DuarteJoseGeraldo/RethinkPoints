@@ -19,27 +19,22 @@ import java.net.URI;
 @RequestMapping(value = "/campaigns")
 public class CampaignController {
     private final CampaignService campaignService;
-
     @PostMapping(value = "/register")
     public ResponseEntity<CampaignEntity> registerCampaign(@RequestBody RegisterCampaignDTO campaignData,  HttpServletRequest request) throws Exception {
         return ResponseEntity.created(URI.create("/campaign/register")).body(campaignService.registerCampaign(getRequestToken(request),campaignData));
     }
-
     @PostMapping(value = "/registerdefault")
     public ResponseEntity<CampaignEntity> registerDefaultCampaign(@RequestBody RegisterDefaultCampaignDTO campaignData, HttpServletRequest request) throws Exception {
         return ResponseEntity.created(URI.create("/campaign/register")).body(campaignService.registerDefaultCampaign(getRequestToken(request),campaignData));
     }
-
     @GetMapping(value = "/info")
     public ResponseEntity<CampaignEntity> getCampaignData(@RequestHeader String idCampaign, HttpServletRequest request) throws Exception {
         return ResponseEntity.ok(campaignService.getCampaignDataByIdCampaign(getRequestToken(request),idCampaign));
     }
-
     @PatchMapping(value = "/update")
     public ResponseEntity<CampaignEntity> updateCampaignData(@RequestParam Long campaignId, @RequestBody UpdateCampaignDTO campaignNewData, HttpServletRequest request) throws Exception {
         return ResponseEntity.ok(campaignService.updateCampaignData(getRequestToken(request),campaignId, campaignNewData));
     }
-
     @DeleteMapping(value = "/delete")
     public ResponseEntity<MessagesDTO> deleteCampaign(@RequestParam Long campaignId, HttpServletRequest request) throws Exception {
         return ResponseEntity.ok(campaignService.deleteCampaign(getRequestToken(request),campaignId));

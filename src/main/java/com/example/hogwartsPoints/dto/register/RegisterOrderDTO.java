@@ -22,4 +22,6 @@ public class RegisterOrderDTO {
     @NonNull
     private List<ItemDTO> items;
     private OrderStatus status;
+    @NonNull
+    private LocalDateTime creditDate;
 }
