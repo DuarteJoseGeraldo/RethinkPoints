@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS `order` (
     `token` VARCHAR(255) NOT NULL,
     `order_number` VARCHAR(255) UNIQUE NOT NULL,
     `order_date` DATETIME NOT NULL,
-    `status` VARCHAR(255) NOT NULL,
+    `status` ENUM('WAITING_CONFIRMATION', 'ORDER_CANCELED', 'ORDER_CONFIRMED') NOT NULL,
     `total` DOUBLE,
     `change_date` DATETIME,
     `points` FLOAT NOT NULL,

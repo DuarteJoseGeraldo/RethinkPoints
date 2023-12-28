@@ -26,3 +26,4 @@ CREATE TABLE IF NOT EXISTS `extract`
 ALTER TABLE `orders`
     ADD COLUMN `credit_date` TIMESTAMP NOT NULL;
 
+

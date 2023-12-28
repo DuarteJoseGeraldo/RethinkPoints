@@ -1,10 +1,18 @@
 package com.example.hogwartsPoints.entity;
 import com.example.hogwartsPoints.dto.enums.TransactionType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 @Data
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name="extract")
 public class ExtractEntity {
     @Id
@@ -16,7 +24,7 @@ public class ExtractEntity {
     @OneToOne(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
     @JoinColumn(name = "order_id", referencedColumnName = "id")
     private OrdersEntity order;
-    @OneToOne(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+    @ManyToOne(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
     @JoinColumn(name = "partner_code", referencedColumnName = "code")
     private PartnerEntity partner;
     @OneToOne(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
