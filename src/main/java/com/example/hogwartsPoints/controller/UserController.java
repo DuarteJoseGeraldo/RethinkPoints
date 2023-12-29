@@ -47,7 +47,7 @@ public class UserController {
     public ResponseEntity<List<ExtractEntity>> getUserExtract(HttpServletRequest request) throws Exception {
         return ResponseEntity.ok(extractService.getUserExtract(getRequestToken(request)));
     }
-    @GetMapping(value = "/extracts")
+    @GetMapping(value = "/extracts")//acessar os extratos de qualquer user
     public ResponseEntity<List<ExtractEntity>> getUserExtractsById(@RequestParam Long userId, HttpServletRequest request) throws Exception {
         return ResponseEntity.ok(extractService.getUserExtractById(getRequestToken(request), userId));
     }

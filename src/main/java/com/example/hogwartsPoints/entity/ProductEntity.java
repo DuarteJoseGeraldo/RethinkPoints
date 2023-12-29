@@ -3,6 +3,7 @@ package com.example.hogwartsPoints.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Data
@@ -10,7 +11,8 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Builder
 @Table(name = "product")
-public class ProductEntity {
+public class ProductEntity implements Serializable {
+    private static final long serialVersionUID = -3695261560195325557L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)

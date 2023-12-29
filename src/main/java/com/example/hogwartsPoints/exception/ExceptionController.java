@@ -9,7 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -19,10 +18,11 @@ import javax.persistence.EntityNotFoundException;
 import java.nio.file.AccessDeniedException;
 import java.security.SignatureException;
 import java.time.DateTimeException;
+import java.util.Arrays;
 import java.util.NoSuchElementException;
 
-//@RestControllerAdvice
-//@Component
+@RestControllerAdvice
+@Component
 @Slf4j
 public class ExceptionController {
     /*---------------------------------GENERIC---------------------------------*/
@@ -32,7 +32,15 @@ public class ExceptionController {
         log.error("ExceptionHandler() - 'Erro Captado': {}", (Object) ex.getStackTrace());
         return ErrorDTO.builder().errorMessage(ex.getMessage()).build();
     }
-    /*---------------------------------BAD REQUEST---------------------------------*/
+    /*-------------------------INTERNAL SERVER ERROR---------------------------*/
+    @ExceptionHandler(NullPointerException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorDTO handleNullPointerException(NullPointerException ex) {
+        log.error("ExceptionHandler() - 'Erro Captado': {}", (Object) ex.getStackTrace());
+        String[] parts = Arrays.toString(ex.getStackTrace()).split(",");
+        return ErrorDTO.builder().errorMessage("NullPointer at: " + parts[0].trim() + "  /  " + parts[1].trim() ).build() ;
+    }
+    /*------------------------------BAD REQUEST--------------------------------*/
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorDTO handleIllegalArgumentException(IllegalArgumentException ex) {
@@ -74,6 +82,12 @@ public class ExceptionController {
     @ResponseStatus(HttpStatus.CONFLICT)
     @ExceptionHandler(EntityExistsException.class)
     public ErrorDTO handleEntityExistsException(Exception ex) {
+        log.error("ExceptionHandler() - 'Erro Captado': {}", (Object) ex.getStackTrace());
+        return ErrorDTO.builder().errorMessage(ex.getMessage()).build();
+    }
+    @ExceptionHandler(BalanceException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ErrorDTO handleBalanceException(BalanceException ex) {
         log.error("ExceptionHandler() - 'Erro Captado': {}", (Object) ex.getStackTrace());
         return ErrorDTO.builder().errorMessage(ex.getMessage()).build();
     }

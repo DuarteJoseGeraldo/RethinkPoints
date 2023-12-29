@@ -38,11 +38,15 @@ public class UserService {
 
     public UserEntity getUserDataById(String accessToken, Long userId) throws Exception {
         jwtUtil.adminValidator(accessToken);
-        return userRepo.findById(userId).orElseThrow(() -> new EntityNotFoundException("user not found"));
+        UserEntity user = userRepo.findById(userId).orElseThrow(() -> new EntityNotFoundException("user not found"));
+        user.setPassword(null);
+        return user;
     }
 
     public UserEntity getUserInfo(String accessToken) throws Exception {
-        return jwtUtil.userTokenValidator(accessToken);
+        UserEntity user = jwtUtil.userTokenValidator(accessToken);
+        user.setPassword(null);
+        return user;
     }
 
     public UserEntity registerUser(RegisterUserDTO userData) throws Exception {

@@ -4,14 +4,13 @@ import com.example.hogwartsPoints.dto.enums.OrderStatus;
 import com.example.hogwartsPoints.dto.enums.TransactionType;
 import com.example.hogwartsPoints.entity.ExtractEntity;
 import com.example.hogwartsPoints.entity.OrdersEntity;
+import com.example.hogwartsPoints.entity.ProductEntity;
 import com.example.hogwartsPoints.entity.UserEntity;
-import com.example.hogwartsPoints.respository.ExtractRepository;
-import com.example.hogwartsPoints.respository.OrdersRepository;
-import com.example.hogwartsPoints.respository.PartnerRepository;
-import com.example.hogwartsPoints.respository.UserRepository;
+import com.example.hogwartsPoints.exception.BalanceException;
+import com.example.hogwartsPoints.respository.*;
+import com.example.hogwartsPoints.utils.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.User;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
@@ -28,7 +27,9 @@ public class PointsService {
     private final ExtractRepository extractRepo;
     private final OrdersRepository ordersRepo;
     private final UserRepository userRepo;
-    private final PartnerRepository partnerRepository;
+    private final PartnerRepository partnerRepo;
+    private final ProductsRepository productsRepo;
+    private final JwtUtil jwtUtil;
 
     @Transactional
     public void creditPointsOfConfirmedOrders(){
@@ -44,7 +45,7 @@ public class PointsService {
                     extracts.add(ExtractEntity.builder()
                             .userCpf(user.getCpf())
                             .order(order)
-                            .partner(partnerRepository.findByCode(order.getPartnerCode()).orElseThrow(()-> new EntityNotFoundException("Partner not found")))
+                            .partner(partnerRepo.findByCode(order.getPartnerCode()).orElseThrow(()-> new EntityNotFoundException("Partner not found")))
                             .product(null)
                             .total(order.getTotal())
                             .points(Math.round(order.getPoints()))
@@ -59,5 +60,20 @@ public class PointsService {
         }catch (Exception e){
             log.error("creditPointsOfConfirmedOrders() - 'Erro ao creditar pontos': {}", e.getMessage());
         }
+    }
+
+    @Transactional
+    public ExtractEntity redeemProduct(String accessToken, String productCode) throws Exception{
+        UserEntity user = jwtUtil.userTokenValidator(accessToken);
+        ProductEntity product = productsRepo.findByCode(productCode).orElseThrow(()-> new EntityNotFoundException("Product not found"));
+        if(product.getPoints() > user.getPoints()) throw new BalanceException("Not enough points");
+        user.setPoints(user.getPoints()-product.getPoints());
+        return extractRepo.save(ExtractEntity.builder()
+                .userCpf(user.getCpf())
+                .product(product)
+                .total(product.getPrice())
+                .points(product.getPoints())
+                .transactionDate(LocalDateTime.now())
+                .transactionType(TransactionType.RESCUE).build());
     }
 }
