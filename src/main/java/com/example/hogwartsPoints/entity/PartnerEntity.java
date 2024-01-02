@@ -36,4 +36,6 @@ public class PartnerEntity implements Serializable {
     private String clientSecret;
     @Column(name = "created_at")
     private LocalDateTime createdAt;
+    @Column(name = "credit_days")
+    private int creditDays;
 }

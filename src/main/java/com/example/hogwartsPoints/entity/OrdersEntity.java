@@ -44,6 +44,6 @@ public class OrdersEntity {
     private LocalDateTime changeDate;
     @Column(name = "points", nullable = false)
     private float points;
-    @Column(name = "credit_date", nullable = false)
+    @Column(name = "credit_date")
     private LocalDateTime creditDate;
 }

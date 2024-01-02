@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class ExtractScheduler {
     private final PointsService pointsService;
+//    @Scheduled(cron = "*/10 * * * * *")
     @Scheduled(cron = "0 0 8,16 * * *")
     public void creditPoints() {
         log.info("creditPoints() - 'Schedule Started'");
