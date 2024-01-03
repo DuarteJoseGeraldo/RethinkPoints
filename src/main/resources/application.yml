@@ -16,11 +16,17 @@ spring:
   banner:
     location: classpath:banner.txt
   datasource:
-    url: jdbc:mysql://localhost:3306/hogwartsapp
-    username: root
+    url: jdbc:postgresql://localhost:5432/hogwartsapp
+    username: postgres
     password: pwd123
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    driver-class-name: org.postgresql.Driver
   flyway:
     locations: db.migration
+    url: jdbc:postgresql://localhost:5432/hogwartsapp
+    user: postgres
+    password: pwd123
   jpa:
     open-in-view: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
