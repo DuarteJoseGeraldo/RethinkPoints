@@ -51,21 +51,16 @@ public class UserController {
     public ResponseEntity<List<ExtractEntity>> getUserExtractsById(@RequestParam Long userId, HttpServletRequest request) throws Exception {
         return ResponseEntity.ok(extractService.getUserExtractById(getRequestToken(request), userId));
     }
-
-
     @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserEntity> registerUser(@RequestBody RegisterUserDTO userData) throws Exception {
         return ResponseEntity.created(URI.create("/users/register")).body(userService.registerUser(userData));
     }
-
     @PatchMapping(value = "/update/data", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserEntity> updateUserData(@RequestBody UpdateUserDTO newUserData, HttpServletRequest request) throws Exception {
         return ResponseEntity.ok(userService.updateData(getRequestToken(request), newUserData));
     }
-
     @PostMapping(value = "/update/password", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public ResponseEntity<MessagesDTO> changePassword(@RequestBody MultiValueMap<String, String> body, HttpServletRequest request) throws Exception {
-        log.info("changePassword() - 'Body': {}", body);
         return ResponseEntity.ok(userService.changePassword(getRequestToken(request), body));
     }
 

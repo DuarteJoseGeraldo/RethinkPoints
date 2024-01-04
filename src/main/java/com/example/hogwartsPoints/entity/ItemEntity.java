@@ -20,7 +20,7 @@ public class ItemEntity {
     private ItemEntityId id;
     @ManyToOne
     @MapsId("orderId") // Mapeia a coluna orderId da chave composta
-    @JoinColumn(name = "order_id")
+    @JoinColumn(name = "order_id", referencedColumnName = "id")
     @JsonIgnore // Evita a serialização infinita
     private OrdersEntity order;
     @Column(name = "sku", unique = true, nullable = false)

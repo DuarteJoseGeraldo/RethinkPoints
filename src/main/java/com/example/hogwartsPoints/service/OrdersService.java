@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
+import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +35,7 @@ public class OrdersService {
     private final JwtUtil jwtUtil;
     private final CampaignService campaignService;
     private final HotsiteService hotsiteService;
+    DecimalFormat decimalFormat = new DecimalFormat("#.#");
 
     public OrdersEntity getInfo(String accessToken,String id) throws Exception {
         jwtUtil.adminValidator(accessToken);

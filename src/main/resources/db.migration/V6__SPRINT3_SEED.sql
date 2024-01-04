@@ -1,33 +1,33 @@
-INSERT INTO "users" (id, name, cpf, house_id, password, points, last_login, user_type, status)
-VALUES (2, 'Hermione Granger', '88888888888', 3, '$2a$12$4LZEYLV./z1ndy9/UMERUuNmjDeIb/UWSB7Ucqy.YOIpxnIcNVocK', 0,
+INSERT INTO "users" (name, cpf, house_id, password, points, last_login, user_type, status)
+VALUES ('Hermione Granger', '88888888888', 3, '$2a$12$4LZEYLV./z1ndy9/UMERUuNmjDeIb/UWSB7Ucqy.YOIpxnIcNVocK', 0,
         NULL, 'STANDARD', 'ACTIVE'),
-       (3, 'Ron Weasley', '77777777777', 1, '$2a$12$4LZEYLV./z1ndy9/UMERUuNmjDeIb/UWSB7Ucqy.YOIpxnIcNVocK', 0, NULL,
+       ('Ron Weasley', '77777777777', 1, '$2a$12$4LZEYLV./z1ndy9/UMERUuNmjDeIb/UWSB7Ucqy.YOIpxnIcNVocK', 0, NULL,
         'STANDARD', 'ACTIVE'),
-       (4, 'Luna Lovegood', '66666666666', 3, '$2a$12$4LZEYLV./z1ndy9/UMERUuNmjDeIb/UWSB7Ucqy.YOIpxnIcNVocK', 0, NULL,
+       ('Luna Lovegood', '66666666666', 3, '$2a$12$4LZEYLV./z1ndy9/UMERUuNmjDeIb/UWSB7Ucqy.YOIpxnIcNVocK', 0, NULL,
         'STANDARD', 'ACTIVE'),
-       (5, 'Draco Malfoy', '55555555555', 4, '$2a$12$4LZEYLV./z1ndy9/UMERUuNmjDeIb/UWSB7Ucqy.YOIpxnIcNVocK', 0, NULL,
+       ('Draco Malfoy', '55555555555', 4, '$2a$12$4LZEYLV./z1ndy9/UMERUuNmjDeIb/UWSB7Ucqy.YOIpxnIcNVocK', 0, NULL,
         'STANDARD', 'ACTIVE'),
-       (6, 'Ginny Weasley', '44444444444', 1, '$2a$12$4LZEYLV./z1ndy9/UMERUuNmjDeIb/UWSB7Ucqy.YOIpxnIcNVocK', 0, NULL,
+       ('Ginny Weasley', '44444444444', 1, '$2a$12$4LZEYLV./z1ndy9/UMERUuNmjDeIb/UWSB7Ucqy.YOIpxnIcNVocK', 0, NULL,
         'STANDARD', 'ACTIVE'),
-       (7, 'Neville Longbottom', '33333333333', 2, '$2a$12$4LZEYLV./z1ndy9/UMERUuNmjDeIb/UWSB7Ucqy.YOIpxnIcNVocK', 0,
+       ('Neville Longbottom', '33333333333', 2, '$2a$12$4LZEYLV./z1ndy9/UMERUuNmjDeIb/UWSB7Ucqy.YOIpxnIcNVocK', 0,
         NULL, 'STANDARD', 'ACTIVE'),
-       (8, 'Cho Chang', '22222222222', 3, '$2a$12$4LZEYLV./z1ndy9/UMERUuNmjDeIb/UWSB7Ucqy.YOIpxnIcNVocK', 0, NULL,
+       ('Cho Chang', '22222222222', 3, '$2a$12$4LZEYLV./z1ndy9/UMERUuNmjDeIb/UWSB7Ucqy.YOIpxnIcNVocK', 0, NULL,
         'STANDARD', 'ACTIVE'),
-       (9, 'Cedric Diggory', '11111111111', 2, '$2a$12$4LZEYLV./z1ndy9/UMERUuNmjDeIb/UWSB7Ucqy.YOIpxnIcNVocK', 0, NULL,
+       ('Cedric Diggory', '11111111111', 2, '$2a$12$4LZEYLV./z1ndy9/UMERUuNmjDeIb/UWSB7Ucqy.YOIpxnIcNVocK', 0, NULL,
         'STANDARD', 'ACTIVE'),
-       (10, 'Harry Potter', '00000000000', 4, '$2a$12$4LZEYLV./z1ndy9/UMERUuNmjDeIb/UWSB7Ucqy.YOIpxnIcNVocK', 0, NULL,
+       ('Harry Potter', '00000000000', 4, '$2a$12$4LZEYLV./z1ndy9/UMERUuNmjDeIb/UWSB7Ucqy.YOIpxnIcNVocK', 0, NULL,
         'STANDARD', 'ACTIVE');
 
 
-INSERT INTO partner (id, name, code, status, client_id, client_secret, created_at)
-VALUES (1, 'Caldeirão Furado', 'CAF', 'ACTIVE', 'partner_CAF_20231227_c97d', '3dce17cbceb6435891d1e881ee252fb9', NOW()),
-       (2, 'Três Vassouras', 'TV', 'ACTIVE', 'partner_TV_20231227_7a8b', 'f4b26a9d8c3f0e2c1b59a7b5c89d3e4', NOW()),
-       (3, 'Gemialidades Weasley', 'GW', 'ACTIVE', 'partner_GW_20231227_5c6d', 'a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6',
+INSERT INTO partner (name, code, status, client_id, client_secret, created_at)
+VALUES ('Caldeirão Furado', 'CAF', 'ACTIVE', 'partner_CAF_20231227_c97d', '3dce17cbceb6435891d1e881ee252fb9', NOW()),
+       ('Três Vassouras', 'TV', 'ACTIVE', 'partner_TV_20231227_7a8b', 'f4b26a9d8c3f0e2c1b59a7b5c89d3e4', NOW()),
+       ('Gemialidades Weasley', 'GW', 'ACTIVE', 'partner_GW_20231227_5c6d', 'a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6',
         NOW()),
-       (4, 'Olivaras', 'OLV', 'ACTIVE', 'partner_OLV_20231227_1a2b', 'qazwsxedcrfvtgbyhnujmikolp123456', NOW()),
-       (5, 'Madame Malkin, Moda para Bruxos', 'MMM', 'ACTIVE', 'partner_MMM_20231227_9b8a',
+       ('Olivaras', 'OLV', 'ACTIVE', 'partner_OLV_20231227_1a2b', 'qazwsxedcrfvtgbyhnujmikolp123456', NOW()),
+       ('Madame Malkin, Moda para Bruxos', 'MMM', 'ACTIVE', 'partner_MMM_20231227_9b8a',
         '5f3e1d2c4b6a7f8e9d0c1b2a3d4e5f6', NOW()),
-       (6, 'Empório das Corujas', 'EDC', 'ACTIVE', 'partner_EDC_20231227_3d2c', '1a2b3c4d5e6f7g8h9i0j1k2l3m4n5o6',
+       ('Empório das Corujas', 'EDC', 'ACTIVE', 'partner_EDC_20231227_3d2c', '1a2b3c4d5e6f7g8h9i0j1k2l3m4n5o6',
         NOW());
 
 INSERT INTO campaign (id_campaign, description, our_parity, partner_parity, start_at, end_at, partner_id)
