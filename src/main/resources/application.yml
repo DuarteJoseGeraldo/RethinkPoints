@@ -16,26 +16,26 @@ spring:
   banner:
     location: classpath:banner.txt
 
-  datasource:
-    url: jdbc:postgresql://db.sdytswbaotdseuguhziu.supabase.co:5432/postgres?user=postgres&password=@HogwartsApp123
-    username: postgres
-    password: "@HogwartsApp123"
-    driver-class-name: org.postgresql.Driver
-  flyway:
-    locations: db.migration
-    url: jdbc:postgresql://db.sdytswbaotdseuguhziu.supabase.co:5432/postgres?user=postgres&password=@HogwartsApp123
-    user: postgres
-    password: "@HogwartsApp123"
 #  datasource:
-#    url: jdbc:postgresql://localhost:5432/hogwartsapp
+#    url: jdbc:postgresql://db.sdytswbaotdseuguhziu.supabase.co:5432/postgres?user=postgres&password=@HogwartsApp123
 #    username: postgres
-#    password: pwd123
+#    password: "@HogwartsApp123"
 #    driver-class-name: org.postgresql.Driver
 #  flyway:
 #    locations: db.migration
-#    url: jdbc:postgresql://localhost:5432/hogwartsapp
+#    url: jdbc:postgresql://db.sdytswbaotdseuguhziu.supabase.co:5432/postgres?user=postgres&password=@HogwartsApp123
 #    user: postgres
-#    password: pwd123
+#    password: "@HogwartsApp123"
+  datasource:
+    url: jdbc:postgresql://localhost:5432/hogwartsapp
+    username: postgres
+    password: pwd123
+    driver-class-name: org.postgresql.Driver
+  flyway:
+    locations: db.migration
+    url: jdbc:postgresql://localhost:5432/hogwartsapp
+    user: postgres
+    password: pwd123
   jpa:
     open-in-view: false
     hibernate:
