@@ -1,7 +1,10 @@
-# Use the official MySQL 8.0 image from Docker Hub
-FROM mysql:8.0
-ENV MYSQL_ROOT_PASSWORD=pwd123
-EXPOSE 3306
-VOLUME mysql-data:/var/lib/mysql
-# Set the default command to run when the container starts
-CMD ["mysqld"]
+# Step Build project
+FROM maven:3.8.4-openjdk-11 AS build
+COPY . .
+RUN mvn clean install
+
+# Step Run Application
+FROM openjdk:11-jdk-slim
+COPY --from=build target/hogwartsPoints-0.0.1-SNAPSHOT.jar hogwartsPoints-0.0.1-SNAPSHOT.jar
+EXPOSE ${SERVER_PORT}
+CMD ["java", "-jar", "hogwartsPoints-0.0.1-SNAPSHOT.jar"]
