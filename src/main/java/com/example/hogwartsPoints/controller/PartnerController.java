@@ -31,17 +31,14 @@ public class PartnerController {
     public ResponseEntity<PartnerEntity> registerPartner(@RequestBody RegisterPartnerDTO partnerData, HttpServletRequest request) throws Exception {
         return ResponseEntity.created(URI.create("/partner/register")).body(partnerService.registerPartner(getRequestToken(request), partnerData));
     }
-
     @DeleteMapping(value = "/disable")
     public ResponseEntity<MessagesDTO> disablePartner(@RequestParam String clientId, HttpServletRequest request) throws Exception {
         return ResponseEntity.ok(partnerService.disablePartner(getRequestToken(request), clientId));
     }
-
     @DeleteMapping(value = "/delete")
     public ResponseEntity<MessagesDTO> deletePartner(@RequestParam Long partnerId, HttpServletRequest request) throws Exception {
         return ResponseEntity.ok(partnerService.deletePartner(getRequestToken(request), partnerId));
     }
-
     @PatchMapping(value = "/update", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PartnerEntity> updatePartner(@RequestParam String clientId, @RequestBody UpdatePartnerDTO partnerData, HttpServletRequest request) throws Exception {
         return ResponseEntity.ok(partnerService.updatePartner(getRequestToken(request), clientId, partnerData));

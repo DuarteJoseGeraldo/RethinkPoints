@@ -27,4 +27,3 @@ public class AccessTokenEntity {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 }
-

@@ -4,6 +4,9 @@ logging:
     org.springframework: "INFO"
     org.springframework.cache: "DEBUG"
 
+server:
+  port: ${SERVER_PORT:8080}
+
 jwt:
   userSecret: "3a1f85c2bd78119aee875af6db72501c"
   userExpirationMs: 86400000 #1 dia
@@ -15,12 +18,32 @@ spring:
     name: "@project.HogwartsPoints@"
   banner:
     location: classpath:banner.txt
+
   datasource:
-    url: jdbc:mysql://localhost:3306/hogwartsapp
-    username: root
-    password: pwd123
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${POSTGRES_HOST:jdbc:postgresql://db.sdytswbaotdseuguhziu.supabase.co:5432/postgres?user=postgres&password=@HogwartsApp123}
+    username: ${POSTGRES_USER:postgres }
+    password: ${POSTGRES_PASS:@HogwartsApp123}
+    driver-class-name: org.postgresql.Driver
   flyway:
     locations: db.migration
+    url: ${POSTGRES_HOST:jdbc:postgresql://db.sdytswbaotdseuguhziu.supabase.co:5432/postgres?user=postgres&password=@HogwartsApp123}
+    user: ${POSTGRES_USER:postgres }
+    password: ${POSTGRES_PASS:@HogwartsApp123}
+#  datasource:
+#    url: jdbc:postgresql://localhost:5432/hogwartsapp
+#    username: postgres
+#    password: pwd123
+#    driver-class-name: org.postgresql.Driver
+#  flyway:
+#    locations: db.migration
+#    url: jdbc:postgresql://localhost:5432/hogwartsapp
+#    user: postgres
+#    password: pwd123
   jpa:
     open-in-view: false
+    hibernate:
+      ddl-auto: update
+#    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect

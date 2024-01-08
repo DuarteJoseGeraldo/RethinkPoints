@@ -38,11 +38,15 @@ public class UserService {
 
     public UserEntity getUserDataById(String accessToken, Long userId) throws Exception {
         jwtUtil.adminValidator(accessToken);
-        return userRepo.findById(userId).orElseThrow(() -> new EntityNotFoundException("user not found"));
+        UserEntity user = userRepo.findById(userId).orElseThrow(() -> new EntityNotFoundException("user not found"));
+        user.setPassword(null);
+        return user;
     }
 
     public UserEntity getUserInfo(String accessToken) throws Exception {
-        return jwtUtil.userTokenValidator(accessToken);
+        UserEntity user = jwtUtil.userTokenValidator(accessToken);
+        user.setPassword(null);
+        return user;
     }
 
     public UserEntity registerUser(RegisterUserDTO userData) throws Exception {
@@ -51,14 +55,15 @@ public class UserService {
             throw new EntityExistsException("User Already registered");
         String password = BCrypt.withDefaults().hashToString(12, userData.getPassword().toCharArray());
         HouseEntity userHouseEntity = houseRepo.findByNameContainingIgnoreCase(userData.getHouse()).orElseThrow(() -> new EntityNotFoundException("House not found"));
-        return userRepo.save(UserEntity.builder().name(userData.getName()).cpf(userData.getCpf()).password(password).houseEntity(userHouseEntity).userType(UserType.STANDARD).points(0.0F).status(Status.ACTIVE).build());
+
+
+           return userRepo.save(UserEntity.builder().name(userData.getName()).cpf(userData.getCpf()).password(password).houseEntity(userHouseEntity).userType(UserType.STANDARD).points(0.0F).status(Status.ACTIVE).build());
+
     }
 
     public UserEntity updateData(String accessToken, UpdateUserDTO userNewData) throws Exception {
         UserEntity userData = jwtUtil.userTokenValidator(accessToken);
-        log.info("updateData() - 'User': {}", userData);
         copyNonNullProperties(userNewData, userData);
-        log.info("updateData() - 'User': {}", userData);
         return userRepo.save(userData);
     }
 

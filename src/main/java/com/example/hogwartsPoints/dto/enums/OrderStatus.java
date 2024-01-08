@@ -8,8 +8,8 @@ import lombok.Getter;
 public enum OrderStatus {
     WAITING_CONFIRMATION("waiting_confirmation"),
     ORDER_CANCELED("order_canceled"),
-    ORDER_CONFIRMED("order_confirmed");
-
+    ORDER_CONFIRMED("order_confirmed"),
+    ORDER_CREDITED("order_credited");
     private final String value;
 
     public static OrderStatus fromValue(String value) {

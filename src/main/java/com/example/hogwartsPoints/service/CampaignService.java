@@ -62,7 +62,7 @@ public class CampaignService {
 
     public float calculatePoints(String idCampaign, float total) {
         CampaignEntity campaign = campaignRepo.findByIdCampaign(idCampaign).orElseThrow(() -> new EntityNotFoundException("Campaign Not Found"));
-        return (float) (total/campaign.getPartnerParity()) * campaign.getOurParity();
+        return (total/campaign.getPartnerParity()) * campaign.getOurParity();
     }
 
     private CampaignEntity validateCampaignData(RegisterCampaignDTO campaignData) {

@@ -43,6 +43,7 @@ public class PartnerService {
                 .status(Status.ACTIVE)
                 .clientId(getPartnerClientId(partnerData.getCode()))
                 .clientSecret(getRandomAlphanumeric())
+                .creditDays(partnerData.getCreditDays())
                 .createdAt(LocalDateTime.now()).build());
     }
 
@@ -87,6 +88,8 @@ public class PartnerService {
         if (partnerData.getCode().length() != 3)
             throw new IllegalArgumentException("Partner code must be 3 characters long");
         partnerData.setCode(partnerData.getCode().toUpperCase());
+        if (partnerData.getCreditDays() < 0)
+            throw new IllegalArgumentException("Days to credit the points should be greater or equals 0");
     }
 
     private void partnerUpdateValidator(UpdatePartnerDTO partnerData) {
