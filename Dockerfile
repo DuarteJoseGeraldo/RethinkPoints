@@ -7,4 +7,4 @@ RUN mvn clean install
 FROM openjdk:11-jdk-slim
 COPY --from=build target/hogwartsPoints-0.0.1-SNAPSHOT.jar hogwartsPoints-0.0.1-SNAPSHOT.jar
 EXPOSE ${SERVER_PORT}
-CMD ["java", "-jar", "hogwartsPoints-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["java", "-jar", "hogwartsPoints-0.0.1-SNAPSHOT.jar"]
