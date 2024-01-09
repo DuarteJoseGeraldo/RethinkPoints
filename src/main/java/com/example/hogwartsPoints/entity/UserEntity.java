@@ -6,9 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
-import org.hibernate.annotations.TypeDefs;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -30,8 +27,11 @@ public class UserEntity {
     @Column(name = "name")
     private String name;
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "house_id", referencedColumnName = "id")
-    private HouseEntity houseEntity;
+    @JoinColumn(name = "hub_id", referencedColumnName = "id", nullable = false)
+    private HubEntity hub;
+    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @JoinColumn(name = "address_id", referencedColumnName = "id", nullable = false)
+    private AddressEntity address;
     @Column(name = "user_type")
     @Enumerated(EnumType.STRING)
     private UserType userType;

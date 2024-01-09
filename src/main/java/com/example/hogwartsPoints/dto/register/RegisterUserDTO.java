@@ -1,6 +1,8 @@
 package com.example.hogwartsPoints.dto.register;
+import com.example.hogwartsPoints.dto.AddressDTO;
 import lombok.*;
 
+import javax.persistence.OneToOne;
 import java.time.LocalDateTime;
 
 @Data
@@ -14,7 +16,9 @@ public class RegisterUserDTO {
     @NonNull
     private String name;
     @NonNull
-    private String house;
+    private String hub;
+    @NonNull
+    private AddressDTO address;
     @NonNull
     private String password;
     private String userType;
