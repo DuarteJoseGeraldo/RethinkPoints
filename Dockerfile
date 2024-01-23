@@ -1,10 +1,13 @@
-# Step Build project
-FROM maven:3.8.4-openjdk-11 AS build
+FROM ubuntu:latest AS build
+
+RUN apt-get update
+RUN apt-get install openjdk-11-jdk -y
 COPY . .
+
+RUN apt-get install maven -y
 RUN mvn clean install
 
-# Step Run Application
 FROM openjdk:11-jdk-slim
-COPY --from=build target/hogwartsPoints-0.0.1-SNAPSHOT.jar hogwartsPoints-0.0.1-SNAPSHOT.jar
-EXPOSE ${SERVER_PORT}
-CMD ["java", "-jar", "hogwartsPoints-0.0.1-SNAPSHOT.jar"]
+COPY --from=build target/RethinkPoints-0.0.1-SNAPSHOT.jar RethinkPoints.jar
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "RethinkPoints.jar"]
