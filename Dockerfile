@@ -9,5 +9,5 @@ RUN mvn clean install
 
 FROM openjdk:11-jdk-slim
 COPY --from=build target/RethinkPoints-0.0.1-SNAPSHOT.jar RethinkPoints.jar
-EXPOSE 8080
+EXPOSE ${SERVER_PORT}
 ENTRYPOINT ["java", "-jar", "RethinkPoints.jar"]

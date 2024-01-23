@@ -20,15 +20,15 @@ spring:
     location: classpath:banner.txt
 
   datasource:
-    url: ${POSTGRES_HOST:jdbc:postgresql://db.sdytswbaotdseuguhziu.supabase.co:5432/postgres?user=postgres&password=@HogwartsApp123}
-    username: ${POSTGRES_USER:postgres }
-    password: ${POSTGRES_PASS:@HogwartsApp123}
+    url: ${POSTGRES_HOST}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASS}
     driver-class-name: org.postgresql.Driver
   flyway:
     locations: db.migration
-    url: ${POSTGRES_HOST:jdbc:postgresql://db.sdytswbaotdseuguhziu.supabase.co:5432/postgres?user=postgres&password=@HogwartsApp123}
-    user: ${POSTGRES_USER:postgres }
-    password: ${POSTGRES_PASS:@HogwartsApp123}
+    url: ${POSTGRES_HOST}
+    user: ${POSTGRES_USER}
+    password: ${POSTGRES_PASS}
 #  datasource:
 #    url: jdbc:postgresql://localhost:5432/rethinkpoints
 #    username: postgres
