@@ -20,7 +20,7 @@ spring:
     location: classpath:banner.txt
 
   datasource:
-    url: ${POSTGRES_HOST:jdbc:postgresql://aws-0-us-west-1.pooler.supabase.com:5432/postgres?user=postgres.iltokvkzkyazwrfbwcjc&password=@RethinkPoints2024}
+    url: ${POSTGRES_HOST:jdbc:postgresql://aws-0-us-west-1.pooler.supabase.com:5432/postgres}
     username: ${POSTGRES_USER:postgres.iltokvkzkyazwrfbwcjc}
     password: ${POSTGRES_PASS:@RethinkPoints2024}
     driver-class-name: org.postgresql.Driver
