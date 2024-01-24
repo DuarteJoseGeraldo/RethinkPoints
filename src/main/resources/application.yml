@@ -19,26 +19,26 @@ spring:
   banner:
     location: classpath:banner.txt
 
-#  datasource:
-#    url: ${POSTGRES_HOST}
-#    username: ${POSTGRES_USER}
-#    password: ${POSTGRES_PASS}
-#    driver-class-name: org.postgresql.Driver
-#  flyway:
-#    locations: db.migration
-#    url: ${POSTGRES_HOST}
-#    user: ${POSTGRES_USER}
-#    password: ${POSTGRES_PASS}
   datasource:
-    url: jdbc:postgresql://localhost:5432/rethinkpoints
-    username: postgres
-    password: pwd123
+    url: ${POSTGRES_HOST}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASS}
     driver-class-name: org.postgresql.Driver
   flyway:
     locations: db.migration
-    url: jdbc:postgresql://localhost:5432/rethinkpoints
-    user: postgres
-    password: pwd123
+    url: ${POSTGRES_HOST}
+    user: ${POSTGRES_USER}
+    password: ${POSTGRES_PASS}
+#  datasource:
+#    url: jdbc:postgresql://localhost:5432/rethinkpoints
+#    username: postgres
+#    password: pwd123
+#    driver-class-name: org.postgresql.Driver
+#  flyway:
+#    locations: db.migration
+#    url: jdbc:postgresql://localhost:5432/rethinkpoints
+#    user: postgres
+#    password: pwd123
   jpa:
     open-in-view: false
     hibernate:
