@@ -86,8 +86,8 @@ public class JwtUtil {
     }
 
     private AccessTokenEntity accessTokenValidator(String token, String secret) throws AccessDeniedException {
-        if (token.startsWith("HogwartsAppJWTToken ")) {
-            String rawToken = token.substring(20).trim();
+        if (token.startsWith("RethinkPointsJWTToken ")) {
+            String rawToken = token.substring(22).trim();
             Jwts.parserBuilder().setSigningKey(Keys.hmacShaKeyFor(secret.getBytes())).build().parseClaimsJws(rawToken).getBody();
             return accessTokenRepo.findByUserIdentifier(accessTokenDataExtractor(rawToken, secret).getUserIdentifier()).orElseThrow(() -> new AccessDeniedException("Access token not Registered"));
         }
