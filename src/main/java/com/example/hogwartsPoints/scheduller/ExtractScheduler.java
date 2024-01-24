@@ -14,7 +14,7 @@ public class ExtractScheduler {
     private final PointsService pointsService;
 
     //    @Scheduled(cron = "*/10 * * * * *")
-    @Scheduled(cron = "0 0 * * * *")
+    @Scheduled(cron = "0 0/30 * * * *")
 
     public void creditPoints() {
         log.info("creditPoints() - 'Schedule Started'");
