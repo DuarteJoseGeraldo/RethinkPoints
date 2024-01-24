@@ -8,10 +8,10 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @SpringBootApplication
 @EnableJpaRepositories
 @EnableScheduling
-public class HogwartsPointsApplication {
+public class RethinkPointsApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(HogwartsPointsApplication.class, args);
+		SpringApplication.run(RethinkPointsApplication.class, args);
 	}
 
 }

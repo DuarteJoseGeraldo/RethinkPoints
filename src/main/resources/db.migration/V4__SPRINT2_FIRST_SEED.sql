@@ -1,6 +1,49 @@
-INSERT INTO house (name)
-VALUES ('Gryffindor'), ('Hufflepuff'), ('Ravenclaw'), ('Slytherin');
+INSERT INTO hub (name)
+VALUES ('CEO'),
+       ('Engineering'),
+       ('Design'),
+       ('Product'),
+       ('People'),
+       ('Finance'),
+       ('Operating'),
+       ('ProjectOps'),
+       ('Delivery'),
+       ('Marketing'),
+       ('Journey'),
+       ('GoBeyond'),
+       ('Business'),
+       ('Data');
 
-INSERT INTO "users" (name, cpf, house_id, password, points, user_type, status)
-VALUES ('Albus Dumbledore', '99999999999', 1,
-        '$2a$12$4LZEYLV./z1ndy9/UMERUuNmjDeIb/UWSB7Ucqy.YOIpxnIcNVocK', 0, 'ADMIN', 'ACTIVE');
+INSERT INTO address (street, number, complement, neighborhood, city, state, zip_code)
+VALUES ('Rua Carvalho', 40, '3º e 4º andar', 'Horto', 'Ipatinga', 'MG', '35160-293'),
+       ('Rua Carvalho', 40, '3º e 4º andar', 'Horto', 'Ipatinga', 'MG', '35160-293'),
+       ('Rua Carvalho', 40, '3º e 4º andar', 'Horto', 'Ipatinga', 'MG', '35160-293'),
+       ('Rua Carvalho', 40, '3º e 4º andar', 'Horto', 'Ipatinga', 'MG', '35160-293'),
+       ('Rua Carvalho', 40, '3º e 4º andar', 'Horto', 'Ipatinga', 'MG', '35160-293'),
+       ('Rua Carvalho', 40, '3º e 4º andar', 'Horto', 'Ipatinga', 'MG', '35160-293'),
+       ('Rua Carvalho', 40, '3º e 4º andar', 'Horto', 'Ipatinga', 'MG', '35160-293'),
+       ('Rua Carvalho', 40, '3º e 4º andar', 'Horto', 'Ipatinga', 'MG', '35160-293'),
+       ('Rua Carvalho', 40, '3º e 4º andar', 'Horto', 'Ipatinga', 'MG', '35160-293'),
+       ('Rua Carvalho', 40, '3º e 4º andar', 'Horto', 'Ipatinga', 'MG', '35160-293');
+
+INSERT INTO "users" (name, cpf, hub_id, address_id, password, points, user_type, status)
+VALUES ('Jose', '00000000000', 2, 1,
+        '$2a$12$4LZEYLV./z1ndy9/UMERUuNmjDeIb/UWSB7Ucqy.YOIpxnIcNVocK', 10000, 'ADMIN', 'ACTIVE'),
+       ('Diego Fernandes', '11111111111', 2, 2,
+        '$2a$12$4LZEYLV./z1ndy9/UMERUuNmjDeIb/UWSB7Ucqy.YOIpxnIcNVocK', 10000, 'ADMIN', 'ACTIVE'),
+       ('Yuri', '22222222222', 2, 3,
+        '$2a$12$4LZEYLV./z1ndy9/UMERUuNmjDeIb/UWSB7Ucqy.YOIpxnIcNVocK', 10000, 'ADMIN', 'ACTIVE'),
+       ('Daniela Valverde', '33333333333', 3, 4,
+        '$2a$12$4LZEYLV./z1ndy9/UMERUuNmjDeIb/UWSB7Ucqy.YOIpxnIcNVocK', 0, 'STANDARD', 'ACTIVE'),
+       ('Hian Linhares', '44444444444', 4, 5,
+        '$2a$12$4LZEYLV./z1ndy9/UMERUuNmjDeIb/UWSB7Ucqy.YOIpxnIcNVocK', 0, 'STANDARD', 'ACTIVE'),
+       ('Leticia Vargas', '55555555555', 5, 6,
+        '$2a$12$4LZEYLV./z1ndy9/UMERUuNmjDeIb/UWSB7Ucqy.YOIpxnIcNVocK', 0, 'STANDARD', 'ACTIVE'),
+       ('Pedro Nankran', '66666666666', 8, 7,
+        '$2a$12$4LZEYLV./z1ndy9/UMERUuNmjDeIb/UWSB7Ucqy.YOIpxnIcNVocK', 0, 'STANDARD', 'ACTIVE'),
+       ('Arthur Vargas', '77777777777', 2, 8,
+        '$2a$12$4LZEYLV./z1ndy9/UMERUuNmjDeIb/UWSB7Ucqy.YOIpxnIcNVocK', 0, 'STANDARD', 'ACTIVE'),
+       ('Marcela Monteiro', '88888888888', 10, 9,
+        '$2a$12$4LZEYLV./z1ndy9/UMERUuNmjDeIb/UWSB7Ucqy.YOIpxnIcNVocK', 0, 'STANDARD', 'ACTIVE'),
+       ('Dede', '99999999999', 1, 10,
+        '$2a$12$4LZEYLV./z1ndy9/UMERUuNmjDeIb/UWSB7Ucqy.YOIpxnIcNVocK', 0, 'STANDARD', 'ACTIVE');
