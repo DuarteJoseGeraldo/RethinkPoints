@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "user")
+@Table(name = "users")
 public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,10 +27,13 @@ public class UserEntity {
     @Column(name = "name")
     private String name;
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "house_id", referencedColumnName = "id")
-    private HouseEntity houseEntity;
-    @Enumerated(EnumType.STRING)
+    @JoinColumn(name = "hub_id", referencedColumnName = "id", nullable = false)
+    private HubEntity hub;
+    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @JoinColumn(name = "address_id", referencedColumnName = "id", nullable = false)
+    private AddressEntity address;
     @Column(name = "user_type")
+    @Enumerated(EnumType.STRING)
     private UserType userType;
     @Column(name = "password")
     private String password;

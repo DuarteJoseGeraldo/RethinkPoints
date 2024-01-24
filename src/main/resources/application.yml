@@ -4,6 +4,9 @@ logging:
     org.springframework: "INFO"
     org.springframework.cache: "DEBUG"
 
+server:
+  port: ${SERVER_PORT:8080}
+
 jwt:
   userSecret: "3a1f85c2bd78119aee875af6db72501c"
   userExpirationMs: 86400000 #1 dia
@@ -12,15 +15,35 @@ jwt:
 
 spring:
   application:
-    name: "@project.HogwartsPoints@"
+    name: "@project.RethinkPoints@"
   banner:
     location: classpath:banner.txt
+
+#  datasource:
+#    url: ${POSTGRES_HOST}
+#    username: ${POSTGRES_USER}
+#    password: ${POSTGRES_PASS}
+#    driver-class-name: org.postgresql.Driver
+#  flyway:
+#    locations: db.migration
+#    url: ${POSTGRES_HOST}
+#    user: ${POSTGRES_USER}
+#    password: ${POSTGRES_PASS}
   datasource:
-    url: jdbc:mysql://localhost:3306/hogwartsapp
-    username: root
+    url: jdbc:postgresql://localhost:5432/rethinkpoints
+    username: postgres
     password: pwd123
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    driver-class-name: org.postgresql.Driver
   flyway:
     locations: db.migration
+    url: jdbc:postgresql://localhost:5432/rethinkpoints
+    user: postgres
+    password: pwd123
   jpa:
     open-in-view: false
+    hibernate:
+      ddl-auto: update
+#    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect

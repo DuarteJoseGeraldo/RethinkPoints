@@ -44,8 +44,8 @@ public class AppUtils {
         }
     }
 
-    public static void copyNonNullProperties(Object source, Object target) {
-        BeanUtils.copyProperties(source, target, getNullPropertyNames(source));
+    public static void copyNonNullProperties(Object newData, Object target) {
+        BeanUtils.copyProperties(newData, target, getNullPropertyNames(newData));
     }
 
     public static String getRandomAlphanumeric() {

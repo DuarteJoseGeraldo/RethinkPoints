@@ -7,4 +7,6 @@ public class RegisterPartnerDTO {
     private String name;
     @NonNull
     private String code;
+    @NonNull
+    private int creditDays;
 }

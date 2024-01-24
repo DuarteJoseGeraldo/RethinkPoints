@@ -9,4 +9,3 @@ public class RegisterDefaultCampaignDTO {
         private Float partnerParity;
         private String partnerCode;
 }
-

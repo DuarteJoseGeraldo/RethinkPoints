@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UpdateHouseDTO {
+public class UpdateHubDTO {
     private  long id;
     private String name;
 }

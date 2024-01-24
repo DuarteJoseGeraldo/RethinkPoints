@@ -9,4 +9,5 @@ import lombok.*;
 public class UpdatePartnerDTO {
     private String name;
     private String code;
+    private int creditDays;
 }

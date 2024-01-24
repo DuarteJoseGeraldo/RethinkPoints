@@ -6,7 +6,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RegisterHouseDTO {
+public class RegisterHubDTO {
     @NonNull
     String name;
 }
