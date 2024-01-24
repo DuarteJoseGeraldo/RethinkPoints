@@ -1,4 +1,4 @@
-# HogwartsApp - Projeto de Estudo Java para Estagiários Rethink
+# RethinkPoints - Projeto de Estudo Java para Estagiários Rethink
 
 ## Visão Geral
 
@@ -29,7 +29,7 @@ O repositório inclui os seguintes arquivos de configuração:
 
 - `application.yml`: Variáveis de ambiente para acesso ao banco de dados.
 - `pom.xml`: Arquivo de configuração do Maven.
-- `Dockerfile`: Configuração para construir a imagem do servidor de banco de dados MySQL.
+- `Dockerfile`: Configuração para construir a imagem da aplicação.
 
 ## Instalação do Maven
 
@@ -67,8 +67,8 @@ Certifique-se de reiniciar o terminal após a instalação para que as alteraç�
 
 ## Docker
 
-O Dockerfile fornecido permite criar um contêiner MySQL com a configuração necessária para o projeto. Em caso de problemas em executar o arquivo, execute o seguinte comando:
+o comando abaixo permite criar um conteiner de um servidor local PostgreSQL para compor o projeto
 
 ```bash
-docker run --name hogwartsapp -e MYSQL_ROOT_PASSWORD=pwd123 -p 3306:3306 -v mysql-data:/var/lib/mysql -d mysql:8.0
+docker run --name postgresapp -e POSTGRES_PASSWORD=pwd123 -e POSTGRES_DB=rethinkpoints -p 5432:5432 -d postgres:15
 ```
