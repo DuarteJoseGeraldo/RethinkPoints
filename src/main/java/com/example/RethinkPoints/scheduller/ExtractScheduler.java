@@ -16,13 +16,13 @@ public class ExtractScheduler {
     private final RethinkPointsClient rethinkPointsClient;
 
     //    @Scheduled(cron = "*/10 * * * * *")
-    @Scheduled(cron = "0 0/30 * * * *")
+    @Scheduled(cron = "0 0 * * * *")
     public void creditPoints() {
         log.info("creditPoints() - 'Schedule Started'");
         pointsService.creditPointsOfConfirmedOrders();
     }
 
-    @Scheduled(cron = "*/60 * * * * *")
+    @Scheduled(cron = "0 0/5 * * * *")
     public void checkServer(){
         MessagesDTO status = rethinkPointsClient.checkServer();
         log.info("checkServer() - 'Server Status: {}'", status.getMessage());

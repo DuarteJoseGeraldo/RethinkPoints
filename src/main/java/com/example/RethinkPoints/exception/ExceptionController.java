@@ -29,14 +29,13 @@ public class ExceptionController {
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorDTO handleGenericException(Exception ex) {
-        log.error("ExceptionHandler() - 'Erro Captado': {}", (Object) ex.getStackTrace());
+        log.error("handleGenericException() - 'Erro Captado': {}", (Object) ex.getStackTrace());
         return ErrorDTO.builder().errorMessage(ex.getMessage()).build();
     }
     /*-------------------------INTERNAL SERVER ERROR---------------------------*/
     @ExceptionHandler(NullPointerException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorDTO handleNullPointerException(NullPointerException ex) {
-        log.error("ExceptionHandler() - 'Erro Captado': {}", (Object) ex.getStackTrace());
         String[] parts = Arrays.toString(ex.getStackTrace()).split(",");
         return ErrorDTO.builder().errorMessage("NullPointer at: " + parts[0].trim() + "  /  " + parts[1].trim() ).build() ;
     }
@@ -44,88 +43,74 @@ public class ExceptionController {
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorDTO handleIllegalArgumentException(IllegalArgumentException ex) {
-        log.error("ExceptionHandler() - 'Erro Captado': {}", (Object) ex.getStackTrace());
         return ErrorDTO.builder().errorMessage(ex.getMessage()).build();
     }
     @ExceptionHandler(DateTimeException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorDTO handleDateTimeException(DateTimeException ex) {
-        log.error("ExceptionHandler() - 'Erro Captado': {}", (Object) ex.getStackTrace());
         return ErrorDTO.builder().errorMessage(ex.getMessage()).build();
     }
     @ExceptionHandler(HttpMessageNotReadableException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorDTO handleHttpMessageNotReadableException(Exception ex) {
-        log.error("ExceptionHandler() - 'Erro Captado': {}", (Object) ex.getStackTrace());
         return ErrorDTO.builder().errorMessage(AppUtils.trySubstringProblem(ex.getMessage())).build();
     }
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(InvalidCpfException.class)
     public ErrorDTO handleInvalidCpfException(Exception ex) {
-        log.error("ExceptionHandler() - 'Erro Captado': {}", (Object) ex.getStackTrace());
         return ErrorDTO.builder().errorMessage(ex.getMessage()).build();
     }
     /*---------------------------------NOT FOUND---------------------------------*/
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(NoSuchElementException.class)
     public ErrorDTO handleNoSuchElementException(Exception ex) {
-        log.error("ExceptionHandler() - 'Erro Captado': {}", (Object) ex.getStackTrace());
         return ErrorDTO.builder().errorMessage(ex.getMessage()).build();
     }
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(EntityNotFoundException.class)
     public ErrorDTO handleEntityNotFoundException(Exception ex) {
-        log.error("ExceptionHandler() - 'Erro Captado': {}", (Object) ex.getStackTrace());
         return ErrorDTO.builder().errorMessage(ex.getMessage()).build();
     }
     /*---------------------------------CONFLICT---------------------------------*/
     @ResponseStatus(HttpStatus.CONFLICT)
     @ExceptionHandler(EntityExistsException.class)
     public ErrorDTO handleEntityExistsException(Exception ex) {
-        log.error("ExceptionHandler() - 'Erro Captado': {}", (Object) ex.getStackTrace());
         return ErrorDTO.builder().errorMessage(ex.getMessage()).build();
     }
     @ExceptionHandler(BalanceException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ErrorDTO handleBalanceException(BalanceException ex) {
-        log.error("ExceptionHandler() - 'Erro Captado': {}", (Object) ex.getStackTrace());
         return ErrorDTO.builder().errorMessage(ex.getMessage()).build();
     }
     /*---------------------------------UNAUTHORIZED---------------------------------*/
     @ExceptionHandler(AccessDeniedException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ErrorDTO handleAccessDeniedException(AccessDeniedException ex) {
-        log.error("ExceptionHandler() - 'Erro Captado': {}", (Object) ex.getStackTrace());
         return ErrorDTO.builder().errorMessage(ex.getMessage()).build();
     }
     @ExceptionHandler(JwtFilterExecption.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ErrorDTO handleJwtFilterException(JwtFilterExecption ex) {
-        log.error("ExceptionHandler() - 'Erro Captado': {}", (Object) ex.getStackTrace());
         return ErrorDTO.builder().errorMessage(ex.getMessage()).build();
     }
     @ExceptionHandler(ExpiredJwtException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ErrorDTO handleExpiredJwtException(ExpiredJwtException ex) {
-        log.error("ExceptionHandler() - 'Erro Captado': {}", (Object) ex.getStackTrace());
         return ErrorDTO.builder().errorMessage(ex.getMessage()).build();
     }
     @ExceptionHandler(UnsupportedJwtException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ErrorDTO handleUnsupportedJwtException(UnsupportedJwtException ex) {
-        log.error("ExceptionHandler() - 'Erro Captado': {}", (Object) ex.getStackTrace());
         return ErrorDTO.builder().errorMessage(ex.getMessage()).build();
     }
     @ExceptionHandler(MalformedJwtException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ErrorDTO handleMalformedJwtException(MalformedJwtException ex) {
-        log.error("ExceptionHandler() - 'Erro Captado': {}", (Object) ex.getStackTrace());
         return ErrorDTO.builder().errorMessage(ex.getMessage()).build();
     }
     @ExceptionHandler(SignatureException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ErrorDTO handleSignatureException(SignatureException ex) {
-        log.error("ExceptionHandler() - 'Erro Captado': {}", (Object) ex.getStackTrace());
         return ErrorDTO.builder().errorMessage(ex.getMessage()).build();
     }
 }
